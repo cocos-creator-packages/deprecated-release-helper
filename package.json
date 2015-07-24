@@ -1,0 +1,27 @@
+{
+  "name": "release-helper",
+  "version": "0.1.0",
+  "description": "release-helper for Fireball",
+  "author": "Firebox Technology",
+  "hosts": {
+      "editor-framework": "^0.3.12"
+  },
+  "main": "main.js",
+  "menus": {
+    "Developer/release-helper": {
+      "message": "release-helper:open"
+    }
+  },
+  "panels": {
+    "panel": {
+      "frame": "panel/release-helper.html",
+      "type": "dockable",
+      "title": "release-helper",
+      "width": 500,
+      "min-width": 325,
+      "height": 550,
+      "messages": [
+      ]
+    }
+  }
+}

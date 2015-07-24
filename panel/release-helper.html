@@ -1,0 +1,71 @@
+<link rel="import" href="packages://ui-kit/widget/index.html">
+<link rel="import" href="packages://ui-property/widget/index.html">
+<link rel="import" href="package-item/package-item.html">
+
+<dom-module id="release-helper">
+    <link rel="import" type="css" href="release-helper.css">
+    <template>
+        <editor-toolbar>
+        </editor-toolbar>
+        <div class="content">
+            <div class="border">
+                <h2 style="padding-left: 10px;">Hosts</h2>
+                <div class="title">
+                    <span class="title-name">Name</span>
+                    <span class="title-version">Version</span>
+                </div>
+                <template is="dom-repeat" items="{{hosts}}">
+                        <div class="simple">
+                            <i class="icon fa fa-lock"></i><span class="name">[[item.name]]</span>
+                            <div class="version">
+                                <span class="small">[[item.version]]</span>
+                                <i class="fa fa-level-up"></i>
+                            </div>
+                        </div>
+                </template>
+            </div>
+
+            <div class="border">
+                <h2 style="padding-left: 10px;">Packages</h2>
+                <div class="title">
+                    <span class="title-name">Name</span>
+                    <span class="title-version">Version</span>
+                </div>
+                <template is="dom-repeat" items="{{packages}}">
+                    <package-item value="[[item]]"></package-item>
+                    <!-- <div class="pkg_info">
+                        <div class="simple package">
+                            <i class="icon fa fa-caret-right"></i>
+                            <span class="name">[[item.info.name]]</span>
+                            <div class="version">
+                                <editor-input value="[[item.info.version]]"></editor-input>
+                            </div>
+                        </div>
+
+                        <div class="details">
+                            <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
+                            <template is="dom-repeat" items="{{obj2Array(item.info.hosts)}}">
+                                <div class="items">
+                                    <span class="name">[[item.name]]</span>
+                                    <div class="version">
+                                        <editor-input value="[[item.version]]"></editor-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
+                            <template is="dom-repeat" items="{{obj2Array(item.info.dependencies)}}">
+                                <div class="items">
+                                    <span class="name">[[item.name]]</span>
+                                    <div class="version">
+                                        <editor-input value="[[item.version]]"></editor-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div> -->
+                </template>
+            </div>
+        </div>
+    </template>
+</dom-module>
+<script type="text/javascript" src="release-helper.js"></script>

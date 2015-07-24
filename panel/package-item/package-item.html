@@ -1,0 +1,34 @@
+<dom-module id="package-item">
+    <link rel="import" type="css" href="package-item.css">
+    <template>
+        <div class="simple package">
+            <i class$="{{_foldClass(folded)}}" on-click="_onFoldClick"></i>
+            <span class="name">[[value.info.name]]</span>
+            <div class="version">
+                <editor-semver value="[[value.info.version]]"></editor-semver>
+            </div>
+        </div>
+
+        <div class="details">
+            <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
+            <template is="dom-repeat" items="{{obj2Array(value.info.hosts)}}">
+                <div class="items">
+                    <span class="name">[[item.name]]</span>
+                    <div class="version">
+                        <editor-semver value="[[item.version]]"></editor-semver>
+                    </div>
+                </div>
+            </template>
+            <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
+            <template is="dom-repeat" items="{{obj2Array(value.info.dependencies)}}">
+                <div class="items">
+                    <span class="name">[[item.name]]</span>
+                    <div class="version">
+                        <editor-semver value="[[item.version]]"></editor-semver>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+</dom-module>
+<script type="text/javascript" src="package-item.js"></script>
