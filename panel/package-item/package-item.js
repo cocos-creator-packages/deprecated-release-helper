@@ -94,7 +94,7 @@ Polymer({
                 Editor.error(err);
             }
         }.bind(this));
-        
+
         this._dirty = false;
     },
 
@@ -123,9 +123,9 @@ Polymer({
 
     calculatedVersion: function (seat,append) {
         var version = this.value.info.version;
-        var tem = version.split('.')[parseInt(seat)];
-        var number = tem.match(/[0-9]+/)[0];
-        var modifier = tem.substr(0, tem.indexOf(tem.match(/[0-9]+/)[0]));
+        var tmp = version.split('.')[parseInt(seat)];
+        var number = tmp.match(/[0-9]+/)[0];
+        var modifier = tmp.substr(0, tmp.indexOf(tmp.match(/[0-9]+/)[0]));
         if (append) {
             number = modifier + (Math.clamp(parseInt(number) + 1, 0, Number.MAX_VALUE));
         }

@@ -60,7 +60,7 @@ Editor.registerPanel('release-helper.panel',{
         }.bind(this));
     },
 
-    refrensh: function () {
+    refresh: function () {
         this.set('packages',[]);
         this.set('hosts',[]);
         this.dirty = false;
@@ -114,7 +114,7 @@ Editor.registerPanel('release-helper.panel',{
         this.dirty = false;
     },
 
-    // NOTE: 批量设置TAG 
+    // NOTE: 批量设置TAG
     setAllTag: function (tag,cb) {
         var cmd = 'git tag -a ' + tag + " -m " + '\'add tag \'';
         var commands = '';
