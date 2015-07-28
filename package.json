@@ -1,10 +1,10 @@
 {
   "name": "release-helper",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "release-helper for Fireball",
   "author": "Firebox Technology",
   "hosts": {
-      "editor-framework": "^0.3.12"
+    "editor-framework": "^0.3.13"
   },
   "main": "main.js",
   "menus": {
@@ -20,8 +20,7 @@
       "width": 500,
       "min-width": 325,
       "height": 550,
-      "messages": [
-      ]
+      "messages": []
     }
   }
 }

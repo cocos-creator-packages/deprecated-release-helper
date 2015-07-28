@@ -6,6 +6,29 @@
     <link rel="import" type="css" href="release-helper.css">
     <template>
         <editor-toolbar>
+            <div class="layout horizontal center space">
+                <editor-checkbox on-checked-changed="_onSelectChanged" id="checkbox">Select All</editor-checkbox>
+                <span> Make All Change : </span>
+                <editor-select value="2" id="select">
+                    <editor-option value="0">Major</editor-option>
+                    <editor-option value="1">Minor</editor-option>
+                    <editor-option value="2">Patch</editor-option>
+                </editor-select>
+                <button on-click="_appendVersion">+1</button>
+                <button on-click="_decreaseVersion">-1</button>
+            </div>
+
+            <div>
+                <editor-button class="green" on-click="refrensh">
+                    <i class="fa fa-refresh" ></i>
+                </editor-button>
+                <editor-button disabled="[[!dirty]]" class="red" on-click="cancel">
+                    <i class="fa fa-times" ></i>
+                </editor-button>
+                <editor-button disabled="[[!dirty]]" class="green" on-click="confirm">
+                    <i class="fa fa-check"></i>
+                </editor-button>
+            </div>
         </editor-toolbar>
         <div class="content">
             <div class="border">
@@ -14,9 +37,10 @@
                     <span class="title-name">Name</span>
                     <span class="title-version">Version</span>
                 </div>
-                <template is="dom-repeat" items="{{hosts}}">
+                <template is="dom-repeat" items="[[hosts]]">
                         <div class="simple">
-                            <i class="icon fa fa-lock"></i><span class="name">[[item.name]]</span>
+                            <i class="icon fa fa-lock"></i>
+                            <span class="name">[[item.name]]</span>
                             <div class="version">
                                 <span class="small">[[item.version]]</span>
                                 <i class="fa fa-level-up"></i>
@@ -31,41 +55,15 @@
                     <span class="title-name">Name</span>
                     <span class="title-version">Version</span>
                 </div>
-                <template is="dom-repeat" items="{{packages}}">
-                    <package-item value="[[item]]"></package-item>
-                    <!-- <div class="pkg_info">
-                        <div class="simple package">
-                            <i class="icon fa fa-caret-right"></i>
-                            <span class="name">[[item.info.name]]</span>
-                            <div class="version">
-                                <editor-input value="[[item.info.version]]"></editor-input>
-                            </div>
-                        </div>
-
-                        <div class="details">
-                            <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
-                            <template is="dom-repeat" items="{{obj2Array(item.info.hosts)}}">
-                                <div class="items">
-                                    <span class="name">[[item.name]]</span>
-                                    <div class="version">
-                                        <editor-input value="[[item.version]]"></editor-input>
-                                    </div>
-                                </div>
-                            </template>
-                            <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
-                            <template is="dom-repeat" items="{{obj2Array(item.info.dependencies)}}">
-                                <div class="items">
-                                    <span class="name">[[item.name]]</span>
-                                    <div class="version">
-                                        <editor-input value="[[item.version]]"></editor-input>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </div> -->
-                </template>
+                <div id="items">
+                    <template is="dom-repeat" items="[[packages]]">
+                        <package-item value="[[item]]"></package-item>
+                    </template>
+                </div>
             </div>
         </div>
+        <editor-loader id="loader" text="Loading" mask hidden></editor-loader>
     </template>
 </dom-module>
+<script type="text/javascript" src="app://bower_components/WebCodeBeauty/dist/WebCodeBeauty.min.js"></script>
 <script type="text/javascript" src="release-helper.js"></script>

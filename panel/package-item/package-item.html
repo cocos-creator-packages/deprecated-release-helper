@@ -2,32 +2,44 @@
     <link rel="import" type="css" href="package-item.css">
     <template>
         <div class="simple package">
-            <i class$="{{_foldClass(folded)}}" on-click="_onFoldClick"></i>
-            <span class="name">[[value.info.name]]</span>
+            <editor-checkbox checked="{{_checked}}"></editor-checkbox>
+            <i class$="[[_foldClass(folded)]]" on-click="_onFoldClick"></i>
+            <span class="name pkgname">[[value.info.name]]<i class="fa fa-folder fold" on-click="_onOpenFoldClick"></i>
+            </span>
             <div class="version">
-                <editor-semver value="[[value.info.version]]"></editor-semver>
+                <editor-input value="{{value.info.version}}" on-value-changed="_versionChanged"></editor-input>
             </div>
         </div>
 
         <div class="details">
             <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
-            <template is="dom-repeat" items="{{obj2Array(value.info.hosts)}}">
-                <div class="items">
-                    <span class="name">[[item.name]]</span>
-                    <div class="version">
-                        <editor-semver value="[[item.version]]"></editor-semver>
+            <div id="hosts">
+                <template is="dom-repeat" items="[[obj2Array(value.info.hosts)]]">
+                    <div class="items">
+                        <div>
+                            <span class="name flex-1" id="name">[[item.name]]</span>
+                            <i class="fa fa-refresh refresh" name$="[[item.name]]" on-click="_refreshHosts"></i>
+                        </div>
+                        <div class="version" id="version">
+                            <editor-input value="{{item.version}}" data-name$="[[item.name]]" on-value-changed="_onHostChanged"></editor-input>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
             <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
-            <template is="dom-repeat" items="{{obj2Array(value.info.dependencies)}}">
-                <div class="items">
-                    <span class="name">[[item.name]]</span>
-                    <div class="version">
-                        <editor-semver value="[[item.version]]"></editor-semver>
+            <div id="dependencies">
+                <template is="dom-repeat" items="[[obj2Array(value.info.dependencies)]]">
+                    <div class="items">
+                        <div>
+                            <span class="name flex-1">[[item.name]]</span>
+                            <i class="fa fa-refresh refresh" name$="[[item.name]]" on-click="_refreshDependencies"></i>
+                        </div>
+                        <div class="version">
+                            <editor-input value="{{item.version}}" data-name$="[[item.name]]" on-value-changed="_onDependenciesChanged"></editor-input>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
     </template>
 </dom-module>

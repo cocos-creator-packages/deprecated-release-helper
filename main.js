@@ -14,6 +14,6 @@ module.exports = {
         for (var item in Editor.versions) {
             hosts.push({name: item, version: Editor.versions[item]});
         }
-        reply(hosts);
+        reply(hosts,Editor.versions);
     },
 };

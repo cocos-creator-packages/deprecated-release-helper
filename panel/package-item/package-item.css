@@ -16,6 +16,7 @@
     flex-direction: row;
     align-items: center;
     margin: 5px 10px;
+    padding-left: 10px;
 }
 
 .simple .name {
@@ -29,11 +30,15 @@
 }
 
 .details {
-    margin-left: 60px;
+    margin-left: 48px;
     display: none;
     flex-direction: column;
     justify-content: space-between;
     padding-bottom: 10px;
+}
+
+.details .version {
+    margin-right: 10px;
 }
 
 .items {
@@ -56,4 +61,21 @@ editor-input {
 
 :host[folded] .details{
     display: flex;
+}
+
+:host[_dirty] .pkgname{
+    color: #01dd24;
+}
+
+.fold {
+    margin-left: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.refresh {
+    font-size: 10px;
+    margin-left: 10px;
+    text-align: center;
+    cursor: pointer;
 }
