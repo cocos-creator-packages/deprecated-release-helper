@@ -9,7 +9,7 @@ module.exports = {
         Editor.Panel.open('release-helper.panel');
     },
 
-    'release-helper:query-hosts-info': function (reply) {
+    'release-helper:query-hosts-infos': function (reply) {
         reply(Editor.versions);
     },
 
