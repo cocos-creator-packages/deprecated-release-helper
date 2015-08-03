@@ -1,0 +1,73 @@
+<link rel="import" href="packages://ui-kit/widget/index.html">
+<link rel="import" href="packages://ui-property/widget/index.html">
+<link rel="import" href="package-item/package-item.html">
+
+<dom-module id="release-helper">
+    <link rel="import" type="css" href="release-helper.css">
+    <template>
+        <editor-toolbar>
+            <div class="layout horizontal center space">
+                <editor-select value="patch" id="select">
+                    <editor-option value="major">Major</editor-option>
+                    <editor-option value="minor">Minor</editor-option>
+                    <editor-option value="patch">Patch</editor-option>
+                </editor-select>
+                <div>
+                    <editor-button on-click="_increaseVersion">
+                        Increase Version
+                    </editor-button>
+                </div>
+                <editor-button on-click="_onAddTagClick">Add Tag</editor-button>
+            </div>
+
+            <div>
+                <editor-button class="green" on-click="refresh">
+                    <i class="fa fa-refresh" ></i>
+                </editor-button>
+                <editor-button disabled="[[!dirty]]" class="red" on-click="cancel">
+                    <i class="fa fa-times" ></i>
+                </editor-button>
+                <editor-button disabled="[[!dirty]]" class="green" on-click="confirm">
+                    <i class="fa fa-check"></i>
+                </editor-button>
+            </div>
+        </editor-toolbar>
+        <div class="content">
+            <div class="border">
+                <h2 style="padding-left: 10px;">Hosts</h2>
+                <div class="title">
+                    <span class="title-name">Name</span>
+                    <span class="title-version">Version</span>
+                </div>
+                <template is="dom-repeat" items="[[hosts]]">
+                        <div class="simple">
+                            <i class="icon fa fa-lock"></i>
+                            <span class="name">[[item.name]]</span>
+                            <div class="version">
+                                <span class="small">[[item.version]]</span>
+                                <i class="fa fa-level-up"></i>
+                            </div>
+                        </div>
+                </template>
+            </div>
+
+            <div class="border">
+                <h2 style="padding-left: 10px;">Packages</h2>
+                <div class="title">
+                    <editor-checkbox style="padding-left: 20px;" on-checked-changed="_onSelectChanged" id="checkbox"></editor-checkbox>
+                    <div class="flex-1 layout horizontal" style="justify-content: space-between;">
+                        <span class="title-name">Name</span>
+                        <span class="title-version">Version</span>
+                    </div>
+                </div>
+                <div id="items">
+                    <template is="dom-repeat" items="[[packages]]">
+                        <package-item value="[[item]]"></package-item>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <editor-loader id="loader" text="Loading" mask hidden></editor-loader>
+    </template>
+</dom-module>
+<script type="text/javascript" src="release-helper.js"></script>

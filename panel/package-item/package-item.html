@@ -1,0 +1,50 @@
+<dom-module id="package-item">
+    <link rel="import" type="css" href="package-item.css">
+    <template>
+        <div class="simple package">
+            <editor-checkbox checked="{{_checked}}"></editor-checkbox>
+            <i class$="[[_foldClass(folded)]]" on-click="_onFoldClick"></i>
+            <i class="fa fa-folder fold" on-click="_onShowinFinderClick"></i>
+            <span class="name pkgname">[[value.info.name]]<editor-label class$="{{_tagClass(tag,value.info.version)}}">[[tag]]</editor-label>
+                <i class="fa fa-times delete" on-click="resetTag"></i>
+            </span>
+            <span class="oldversion">[[oldVersion]]</span>
+            <i class="fa fa-long-arrow-right oldversion"></i>
+            <div class="version">
+                <editor-input value="{{value.info.version}}" on-value-changed="_versionChanged"></editor-input>
+            </div>
+        </div>
+
+        <div class="details">
+            <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
+            <div id="hosts">
+                <template is="dom-repeat" id="hoststemplate" items="[[obj2Array(value.info.hosts)]]">
+                    <div class="item">
+                        <div>
+                            <span class="name flex-1" id="name">[[item.name]]</span>
+                            <i class="fa fa-refresh refresh" on-click="_refreshHosts"></i>
+                        </div>
+                        <div class="version" id="version">
+                            <editor-input value="{{item.version}}" on-value-changed="_onHostChanged"></editor-input>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
+            <div id="dependencies">
+                <template is="dom-repeat" id="depetemplate" items="[[obj2Array(value.info.dependencies)]]">
+                    <div class="item">
+                        <div>
+                            <span class="name flex-1">[[item.name]]</span>
+                            <i class="fa fa-refresh refresh" on-click="_refreshDependencies"></i>
+                        </div>
+                        <div class="version">
+                            <editor-input value="{{item.version}}" on-value-changed="_onDependenciesChanged"></editor-input>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+</dom-module>
+<script type="text/javascript" src="package-item.js"></script>

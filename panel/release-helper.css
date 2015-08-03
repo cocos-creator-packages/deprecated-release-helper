@@ -1,0 +1,116 @@
+:host {
+    color: #BBB;
+    @apply(--layout-vertical);
+}
+
+.content {
+    padding: 5px;
+    overflow: hidden;
+    overflow-y: auto;
+    flex: 1;
+    background: #474747;
+}
+
+:host ::content .content.editor-section {
+    padding: 0px;
+}
+
+.border {
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+}
+
+.title-name {
+    padding-left: 10px;
+    color: white;
+}
+
+.title-version {
+    padding-right: 10px;
+    color: white;
+}
+
+.simple {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    margin: 15px 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #595959;
+}
+
+.icon {
+    padding: 0px 10px;
+    width: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.simple .name {
+    flex: 3;
+    text-transform: capitalize;
+}
+
+.simple .version {
+    flex: 1;
+    text-align: right;
+    font-size: 12px;
+}
+
+.package {
+    border-bottom: none;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.details {
+    margin-left: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 10px;
+}
+
+.items {
+    margin-left: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 3px;
+
+}
+
+editor-toolbar {
+    justify-content: space-between;
+}
+
+editor-input {
+    width: 100px;
+}
+
+.detailname {
+    text-transform: capitalize;
+    margin: 5px 0px;
+}
+
+.pkg_info {
+    margin: 15px;
+    border-bottom: 1px solid #595959;
+}
+
+.space ::content > * {
+    margin-right: 10px;
+}
+
+:host ::content editor-toolbar .btn.editor-button {
+    background-color: rgb(94, 94, 94);
+    border-radius: 2px;
+}
+
+:host ::content editor-toolbar [disabled] .btn.editor-button {
+  background: #535252 !important;
+}
