@@ -87,7 +87,7 @@ Polymer({
     },
 
     setDirty: function () {
-        this.fire('dirty');
+        this.fire('item-dirty');
         this._dirty = true;
     },
 

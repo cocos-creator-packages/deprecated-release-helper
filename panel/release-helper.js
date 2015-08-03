@@ -5,7 +5,7 @@ Editor.registerPanel('release-helper.panel',{
     is: 'release-helper',
 
     listeners: {
-        'dirty' : '_onDirtyChanged'
+        'item-dirty' : '_onItemDirtyChanged'
     },
 
     properties: {
@@ -76,7 +76,7 @@ Editor.registerPanel('release-helper.panel',{
         }.bind(this));
     },
 
-    _onDirtyChanged: function () {
+    _onItemDirtyChanged: function () {
         this.dirty = true;
     },
 
