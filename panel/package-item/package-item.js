@@ -1,6 +1,6 @@
 var Fs = require('fs');
 var Shell = require('shell');
-var semver = require('semver');
+var Semver = require('semver');
 
 Polymer({
     is: 'package-item',
@@ -65,7 +65,7 @@ Polymer({
 
     _versionChanged: function (event) {
         this.verify(event.target);
-        if (!semver.satisfies(event.target.value,'>=' + this.oldVersion)) {
+        if (!Semver.satisfies(event.target.value,'>=' + this.oldVersion)) {
             event.target.value = this.oldVersion;
         }
         this.callDirty();
