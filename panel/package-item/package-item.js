@@ -1,5 +1,7 @@
 var Fs = require('fs');
 var Shell = require('shell');
+var semver = require('semver');
+
 Polymer({
     is: 'package-item',
 
@@ -31,7 +33,17 @@ Polymer({
         _checked: {
             type: Boolean,
             value: false,
-        }
+        },
+
+        tag: {
+            type: String,
+            value: '',
+        },
+    },
+
+    ready: function () {
+        this.oldVersion = this.value.info.version;
+        this.syncGitTag();
     },
 
     _cancelSelect: function () {
@@ -53,6 +65,9 @@ Polymer({
 
     _versionChanged: function (event) {
         this.verify(event.target);
+        if (!semver.satisfies(event.target.value,'>=' + this.oldVersion)) {
+            event.target.value = this.oldVersion;
+        }
         this.callDirty();
     },
 
@@ -71,8 +86,26 @@ Polymer({
     },
 
     callDirty: function () {
-        this.fire('dirty-changed');
+        this.fire('dirty');
         this._dirty = true;
+    },
+
+    syncGitTag: function (cb) {
+        var path = this.value.path;
+        
+        var commands = 'cd ' + path + ' && ' + 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
+        Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+            if (!error) {
+                var tags = stdout.split('\n');
+                this.tag = tags[tags.length - 2];
+                if (cb) {
+                    cb(this.tag);
+                }
+            }
+            else {
+                Editor.error(stderr);
+            }
+        }.bind(this));
     },
 
     confirm: function () {
@@ -83,7 +116,7 @@ Polymer({
                 obj.hosts = this.value.info.hosts;
                 obj.dependencies = this.value.info.hosts;
                 obj.dependencies = this.value.info.dependencies;
-                var json = WebCodeBeauty.json(JSON.stringify(obj),2);
+                var json = JSON.stringify(obj,null,2);
                 Fs.writeFile( this.value.path + '/package.json', json,function (err,state) {
                     if (err) {
                         Editor.error(err);
@@ -99,6 +132,7 @@ Polymer({
     },
 
     verify: function (target) {
+        // Checking the version's format
         if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
             target.invalid = true;
             this.folded = true;
@@ -114,23 +148,24 @@ Polymer({
         }
         return 'icon fa fa-caret-right';
     },
-
-    _onOpenFoldClick: function (event) {
-        event.stopPropagation();
-        Shell.showItemInFolder(this.value.path);
-        Shell.beep();
-    },
+    //
+    // _onOpenFoldClick: function (event) {
+    //     event.stopPropagation();
+    //     Shell.showItemInFolder(this.value.path);
+    //     Shell.beep();
+    // },
 
     calculatedVersion: function (seat,append) {
         var version = this.value.info.version;
         var tmp = version.split('.')[parseInt(seat)];
+        var oldNumber =  parseInt(this.oldVersion.split('.')[parseInt(seat)]);
         var number = tmp.match(/[0-9]+/)[0];
         var modifier = tmp.substr(0, tmp.indexOf(tmp.match(/[0-9]+/)[0]));
         if (append) {
-            number = modifier + (Math.clamp(parseInt(number) + 1, 0, Number.MAX_VALUE));
+            number = modifier + (Math.clamp(parseInt(number) + 1, oldNumber, Number.MAX_VALUE));
         }
         else {
-            number = modifier + (Math.clamp(parseInt(number) - 1, 0, Number.MAX_VALUE));
+            number = modifier + (Math.clamp(parseInt(number) - 1, oldNumber, Number.MAX_VALUE));
         }
 
         switch (seat) {
@@ -176,5 +211,27 @@ Polymer({
             this.set('value.info.hosts',[]);
             this.set('value.info.hosts',hosts);
         }.bind(this));
+    },
+
+    resetTag: function () {
+        var path = this.value.path;
+        var commands = 'cd ' + path + ' && ' + 'git tag ' + this.tag + ' -d';
+        Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+            if (!error) {
+                this.syncGitTag();
+            }
+            else {
+                Editor.error(stderr);
+            }
+        }.bind(this));
+    },
+
+    _tagClass: function (tag,version) {
+        if (tag === version) {
+            return 'tag mini green';
+        }
+        else {
+            return 'tag mini red';
+        }
     },
 });

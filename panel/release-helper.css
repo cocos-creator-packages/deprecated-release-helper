@@ -21,11 +21,10 @@
 
 .title {
     display: flex;
-    justify-content: space-between;
 }
 
 .title-name {
-    padding-left: 20px;
+    padding-left: 10px;
     color: white;
 }
 
@@ -106,4 +105,13 @@ editor-input {
 
 .space ::content > * {
     margin-right: 10px;
+}
+
+:host ::content editor-toolbar .btn.editor-button {
+    background-color: rgb(94, 94, 94);
+    border-radius: 2px;
+}
+
+:host ::content editor-toolbar [disabled] .btn.editor-button {
+  background: #535252 !important;
 }

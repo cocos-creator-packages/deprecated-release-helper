@@ -30,7 +30,7 @@
 }
 
 .details {
-    margin-left: 48px;
+    margin-left: 58px;
     display: none;
     flex-direction: column;
     justify-content: space-between;
@@ -47,7 +47,8 @@
     justify-content: space-between;
     flex-direction: row;
     margin-bottom: 3px;
-
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 editor-input {
@@ -63,8 +64,8 @@ editor-input {
     display: flex;
 }
 
-:host[_dirty] .pkgname{
-    color: #01dd24;
+:host[_dirty] {
+    color: #22BCFF;
 }
 
 .fold {
@@ -78,4 +79,32 @@ editor-input {
     margin-left: 10px;
     text-align: center;
     cursor: pointer;
+}
+
+.tag {
+    font-size: 10px;
+    color: #b8b000;
+    margin-left: 4px;
+    text-transform: none;
+}
+
+.pkgname {
+    display: flex;
+    overflow-x: hidden;
+    word-spacing: normal;
+    white-space: nowrap;
+}
+
+.oldversion {
+    font-size: 12px;
+    padding: 0px 4px;
+    color: #6C6C6C;
+}
+
+.delete {
+    color: #898989;
+    font-size: 12px;
+    padding-left: 3px;
+    cursor: pointer;
+    line-height: 16px;
 }

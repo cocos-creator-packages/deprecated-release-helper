@@ -4,8 +4,11 @@
         <div class="simple package">
             <editor-checkbox checked="{{_checked}}"></editor-checkbox>
             <i class$="[[_foldClass(folded)]]" on-click="_onFoldClick"></i>
-            <span class="name pkgname">[[value.info.name]]<i class="fa fa-folder fold" on-click="_onOpenFoldClick"></i>
+            <span class="name pkgname">[[value.info.name]]<editor-label class$="{{_tagClass(tag,value.info.version)}}">[[tag]]</editor-label>
+                <i class="fa fa-times delete" on-click="resetTag"></i>
             </span>
+            <span class="oldversion">[[oldVersion]]</span>
+            <i class="fa fa-long-arrow-right oldversion"></i>
             <div class="version">
                 <editor-input value="{{value.info.version}}" on-value-changed="_versionChanged"></editor-input>
             </div>

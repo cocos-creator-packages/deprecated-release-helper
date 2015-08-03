@@ -7,15 +7,21 @@
     <template>
         <editor-toolbar>
             <div class="layout horizontal center space">
-                <editor-checkbox on-checked-changed="_onSelectChanged" id="checkbox">Select All</editor-checkbox>
                 <span> Make All Change : </span>
                 <editor-select value="2" id="select">
                     <editor-option value="0">Major</editor-option>
                     <editor-option value="1">Minor</editor-option>
                     <editor-option value="2">Patch</editor-option>
                 </editor-select>
-                <button on-click="_appendVersion">+1</button>
-                <button on-click="_decreaseVersion">-1</button>
+                <div>
+                    <editor-button on-click="_appendVersion">
+                        <i class="fa fa-angle-up"></i>
+                    </editor-button>
+                    <editor-button on-click="_decreaseVersion">
+                        <i class="fa fa-angle-down"></i>
+                    </editor-button>
+                </div>
+                <editor-button on-click="_makeTags"> Tag </editor-button>
             </div>
 
             <div>
@@ -52,8 +58,11 @@
             <div class="border">
                 <h2 style="padding-left: 10px;">Packages</h2>
                 <div class="title">
-                    <span class="title-name">Name</span>
-                    <span class="title-version">Version</span>
+                    <editor-checkbox style="padding-left: 20px;" on-checked-changed="_onSelectChanged" id="checkbox"></editor-checkbox>
+                    <div class="flex-1 layout horizontal" style="justify-content: space-between;">
+                        <span class="title-name">Name</span>
+                        <span class="title-version">Version</span>
+                    </div>
                 </div>
                 <div id="items">
                     <template is="dom-repeat" items="[[packages]]">
@@ -65,5 +74,4 @@
         <editor-loader id="loader" text="Loading" mask hidden></editor-loader>
     </template>
 </dom-module>
-<script type="text/javascript" src="app://bower_components/WebCodeBeauty/dist/WebCodeBeauty.min.js"></script>
 <script type="text/javascript" src="release-helper.js"></script>

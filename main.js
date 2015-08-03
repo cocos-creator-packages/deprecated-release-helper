@@ -16,4 +16,11 @@ module.exports = {
         }
         reply(hosts,Editor.versions);
     },
+
+    'release-helper:child_process': function (reply,cmd) {
+        var child_process = require('child_process');
+        child_process.exec(cmd,function(error, stdout, stderr){
+            reply(error, stdout, stderr);
+        });
+    },
 };

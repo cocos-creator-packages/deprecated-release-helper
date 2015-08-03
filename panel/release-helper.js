@@ -1,10 +1,11 @@
 var Async = require('async');
+var git = require('git-utils');
 
 Editor.registerPanel('release-helper.panel',{
     is: 'release-helper',
 
     listeners: {
-        'dirty-changed' : '_onDirtyChanged'
+        'dirty' : '_onDirtyChanged'
     },
 
     properties: {
@@ -26,7 +27,7 @@ Editor.registerPanel('release-helper.panel',{
             type: Boolean,
             value: false,
             reflectToAttribute: true,
-        }
+        },
     },
 
     ready: function () {
@@ -111,45 +112,110 @@ Editor.registerPanel('release-helper.panel',{
         for (var i = 0; i < packages.length; ++i) {
             packages[i].confirm();
         }
+
         this.dirty = false;
     },
 
-    // NOTE: 批量设置TAG
-    setAllTag: function (tag,cb) {
-        var cmd = 'git tag -a ' + tag + " -m " + '\'add tag \'';
-        var commands = '';
-        var packages = this._getAllCheckedItems();
-        for (var i = 0; i < packages.length; ++i) {
-            commands += 'cd ' + this.packages[i].value.path + '&& ';
-            commands += cmd + '\r\n';
+    _hasModified: function (path) {
+        var repository = git.open(path);
+        for (var name in repository.getStatus()) {
+            return true;
         }
-        child_process.exec(commands,function(error, stdout, stderr){
-            if (!error) {
-                Editor.success('add tag all done!');
-                cb(error,stdout);
+        return false;
+    },
+
+    _resetTag: function (path,tag,cb) {
+        Async.series([
+            function (next) {
+                var resetCommand = 'cd ' + path + ' && ' + ' git tag ' + tag + ' -d';
+                Editor.sendRequestToCore('release-helper:child_process',resetCommand, function( error,stdout,stderr ) {
+                    if (!error) {
+                        next();
+                    }
+                }.bind(this));
+            },
+
+            function (next) {
+                var cmd = 'git tag -a ' + tag + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
+                var commands = '';
+                commands += 'cd ' + path + ' && ';
+                commands += cmd + '\r\n';
+                Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+                    if (!error) {
+                        cb();
+                    }
+                });
+            },
+        ],function () {
+            cb();
+        }.bind(this));
+    },
+
+    setAllTag: function () {
+        var packages = this._getAllCheckedItems();
+        var j = 0;
+        var confirmTags = function () {
+            if (j >= packages.length ) {
+                return;
+            }
+            // check the git status
+            if ( !this._hasModified(packages[j].value.path) ) {
+                var cmd = 'git tag -a ' + packages[j].value.info.version + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
+                var commands = '';
+                commands += 'cd ' + packages[j].value.path + ' && ';
+                commands += cmd + '\r\n';
+                Editor.sendRequestToCore('release-helper:child_process', commands, function( error,stdout,stderr ) {
+                        // if the tag already exists, 1.delete the tag 2.set the same tag again.
+                        if (error && stderr.indexOf('already exists') > -1) {
+                            this._resetTag(packages[j].value.path,packages[j].value.info.version,function () {
+                                packages[j].syncGitTag();
+                                j++;
+                                confirmTags();
+                            });
+                        }
+                        else {
+                            packages[j].syncGitTag();
+                            j++;
+                            confirmTags();
+                        }
+                }.bind(this));
             }
             else {
-                Editor.error(stderr);
+                Editor.warn( packages[j].value.path + ': "' + packages[j].value.info.name + '" has modified,please commit first!');
             }
-        });
+        }.bind(this);
+
+        confirmTags();
+    },
+
+    _makeTags: function (event) {
+        event.stopPropagation();
+
+        this.setAllTag();
     },
 
     _onSelectChanged: function (event) {
-        var selectAll = event.target.checked;
+        event.stopPropagation();
+
+        var selected = event.target.checked;
         var packages = this._getAllPackages();
         for (var i = 0; i < packages.length; ++i) {
-            packages[i]._checked = selectAll;
+            packages[i]._checked = selected;
         }
     },
 
-    _appendVersion: function() {
+    _appendVersion: function(event) {
+        event.stopPropagation();
+
         var packages = this._getAllCheckedItems();
         for (var i = 0; i < packages.length; ++i) {
             packages[i].calculatedVersion(this.$.select.value,true);
         }
     },
 
-    _decreaseVersion: function () {
+    _decreaseVersion: function (event) {
+        event.stopPropagation();
+
         var packages = this._getAllCheckedItems();
         for (var i = 0; i < packages.length; ++i) {
             packages[i].calculatedVersion(this.$.select.value,false);
