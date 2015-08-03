@@ -17,9 +17,9 @@ module.exports = {
         reply(Editor.versions[name]);
     },
 
-    'release-helper:exec_cmd': function (reply,cmd) {
+    'release-helper:exec-cmd': function (reply,cmd,path) {
         var child_process = require('child_process');
-        child_process.exec(cmd,function(error, stdout, stderr){
+        child_process.exec(cmd,{cwd: path},function(error, stdout, stderr){
             reply(error, stdout, stderr);
         });
     },

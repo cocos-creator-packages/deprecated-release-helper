@@ -131,8 +131,8 @@ Editor.registerPanel('release-helper.panel',{
     _resetTag: function (path,tag,cb) {
         Async.series([
             function (next) {
-                var resetCommand = 'cd ' + path + ' && ' + ' git tag ' + tag + ' -d';
-                Editor.sendRequestToCore('release-helper:exec_cmd',resetCommand, function( error,stdout,stderr ) {
+                var resetCommand =' git tag ' + tag + ' -d';
+                Editor.sendRequestToCore('release-helper:exec-cmd',resetCommand, path, function( error,stdout,stderr ) {
                     if (!error) {
                         next();
                     }
@@ -141,10 +141,7 @@ Editor.registerPanel('release-helper.panel',{
 
             function (next) {
                 var cmd = 'git tag -a ' + tag + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
-                var commands = '';
-                commands += 'cd ' + path + ' && ';
-                commands += cmd + '\r\n';
-                Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd',cmd,path, function( error,stdout,stderr ) {
                     if (!error) {
                         cb();
                     }
@@ -163,12 +160,10 @@ Editor.registerPanel('release-helper.panel',{
                 return;
             }
             // check the git status
-            if ( !this._hasModified(packages[j].value.path) ) {
+            if ( this._hasModified(packages[j].value.path) ) {
                 var cmd = 'git tag -a ' + packages[j].value.info.version + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
-                var commands = '';
-                commands += 'cd ' + packages[j].value.path + ' && ';
-                commands += cmd + '\r\n';
-                Editor.sendRequestToCore('release-helper:exec_cmd', commands, function( error,stdout,stderr ) {
+                var path = packages[j].value.path;
+                Editor.sendRequestToCore('release-helper:exec-cmd', cmd,path, function( error,stdout,stderr ) {
                         // if the tag already exists, 1.delete the tag 2.set the same tag again.
                         if (error && stderr.indexOf('already exists') > -1) {
                             this._resetTag(packages[j].value.path,packages[j].value.info.version,function () {

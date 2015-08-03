@@ -93,8 +93,8 @@ Polymer({
     syncGitTag: function (cb) {
         var path = this.value.path;
 
-        var commands = 'cd ' + path + ' && ' + 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
-        Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
+        var commands = 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
+        Editor.sendRequestToCore('release-helper:exec-cmd',commands, path, function( error,stdout,stderr ) {
             if (!error) {
                 var tags = stdout.split('\n');
                 this.tag = tags[tags.length - 2];
@@ -212,8 +212,8 @@ Polymer({
 
     resetTag: function () {
         var path = this.value.path;
-        var commands = 'cd ' + path + ' && ' + 'git tag ' + this.tag + ' -d';
-        Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
+        var commands = 'git tag ' + this.tag + ' -d';
+        Editor.sendRequestToCore('release-helper:exec-cmd',commands,path, function( error,stdout,stderr ) {
             if (!error) {
                 this.syncGitTag();
             }
