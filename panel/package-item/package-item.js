@@ -149,12 +149,12 @@ Polymer({
         }
         return 'icon fa fa-caret-right';
     },
-    //
-    // _onOpenFoldClick: function (event) {
-    //     event.stopPropagation();
-    //     Shell.showItemInFolder(this.value.path);
-    //     Shell.beep();
-    // },
+
+    _onOpenFoldClick: function (event) {
+        event.stopPropagation();
+        Shell.showItemInFolder(this.value.path);
+        Shell.beep();
+    },
 
     calculatedVersion: function (seat, append) {
         var version = this.value.info.version;

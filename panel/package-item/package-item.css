@@ -69,7 +69,7 @@ editor-input {
 }
 
 .fold {
-    margin-left: 10px;
+    margin-right: 4px;
     text-align: center;
     cursor: pointer;
 }
