@@ -152,7 +152,7 @@ Editor.registerPanel('release-helper.panel',{
         }.bind(this));
     },
 
-    setAllTag: function () {
+    setTags: function () {
         var packages = this._getAllCheckedItems();
         var j = 0;
         var confirmTags = function () {
@@ -187,10 +187,10 @@ Editor.registerPanel('release-helper.panel',{
         confirmTags();
     },
 
-    _makeTags: function (event) {
+    _onAddTagClick: function (event) {
         event.stopPropagation();
 
-        this.setAllTag();
+        this.setTags();
     },
 
     _onSelectChanged: function (event) {
