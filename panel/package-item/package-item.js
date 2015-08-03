@@ -69,24 +69,24 @@ Polymer({
         if (!Semver.gt(event.target.value, this.oldVersion)) {
             event.target.value = this.oldVersion;
         }
-        this.callDirty();
+        this.setDirty();
     },
 
     _onHostChanged: function (event) {
         this.verify(event.target);
         var keyName = this.$.hoststemplate.itemForElement(event.target).name;
         this.value.info.hosts[keyName] = event.target.value;
-        this.callDirty();
+        this.setDirty();
     },
 
     _onDependenciesChanged: function (event) {
         this.verify(event.target);
         var keyName = this.$.depetemplate.itemForElement(event.target).name;
         this.value.info.dependencies[keyName] = event.target.value;
-        this.callDirty();
+        this.setDirty();
     },
 
-    callDirty: function () {
+    setDirty: function () {
         this.fire('dirty');
         this._dirty = true;
     },
