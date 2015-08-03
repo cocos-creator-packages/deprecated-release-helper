@@ -14,7 +14,10 @@ module.exports = {
         for (var item in Editor.versions) {
             hosts.push({name: item, version: Editor.versions[item]});
         }
-        reply(hosts,Editor.versions);
+        var obj = {};
+        obj.hosts = hosts;
+        obj.versions = Editor.versions;
+        reply(obj);
     },
 
     'release-helper:child_process': function (reply,cmd) {

@@ -47,8 +47,8 @@ Editor.registerPanel('release-helper.panel',{
             }.bind(this),
 
             function (next) {
-                Editor.sendRequestToCore('release-helper:query-hosts-info', function( host, versions ) {
-                    this.set('hosts',host);
+                Editor.sendRequestToCore('release-helper:query-hosts-info', function( results ) {
+                    this.set('hosts',results.host);
                     next();
                 }.bind(this));
             }.bind(this),

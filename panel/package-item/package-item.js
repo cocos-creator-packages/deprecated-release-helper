@@ -92,7 +92,7 @@ Polymer({
 
     syncGitTag: function (cb) {
         var path = this.value.path;
-        
+
         var commands = 'cd ' + path + ' && ' + 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
         Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
             if (!error) {
@@ -203,13 +203,13 @@ Polymer({
         event.stopPropagation();
 
         var keyName = event.target.getAttribute('name');
-        Editor.sendRequestToCore('release-helper:query-hosts-info', function( host, versions ) {
+        Editor.sendRequestToCore('release-helper:query-hosts-info', function( results ) {
             var hosts = this.value.info.hosts;
             var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
             hosts[keyName] = modifier + versions[keyName];
 
             this.set('value.info.hosts',[]);
-            this.set('value.info.hosts',hosts);
+            this.set('value.info.hosts',results.hosts);
         }.bind(this));
     },
 
