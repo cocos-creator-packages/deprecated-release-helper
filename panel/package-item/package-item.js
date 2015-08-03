@@ -1,6 +1,7 @@
-var Fs = require('fs');
+var Fs = require('fire-fs');
 var Shell = require('shell');
 var Semver = require('semver');
+var Path = require('fire-path');
 
 Polymer({
     is: 'package-item',
@@ -65,7 +66,7 @@ Polymer({
 
     _versionChanged: function (event) {
         this.verify(event.target);
-        if (!Semver.satisfies(event.target.value,'>=' + this.oldVersion)) {
+        if (!Semver.satisfies(event.target.value, '>=' + this.oldVersion)) {
             event.target.value = this.oldVersion;
         }
         this.callDirty();
@@ -94,7 +95,7 @@ Polymer({
         var path = this.value.path;
 
         var commands = 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
-        Editor.sendRequestToCore('release-helper:exec-cmd',commands, path, function( error,stdout,stderr ) {
+        Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
             if (!error) {
                 var tags = stdout.split('\n');
                 this.tag = tags[tags.length - 2];
@@ -109,15 +110,15 @@ Polymer({
     },
 
     confirm: function () {
-        Fs.readFile(this.value.path + '/package.json',function (err,data) {
+        Fs.readFile(this.value.path + '/package.json', function (err, data) {
             if (!err) {
                 var obj = JSON.parse(data.toString());
                 obj.version = this.value.info.version;
                 obj.hosts = this.value.info.hosts;
                 obj.dependencies = this.value.info.hosts;
                 obj.dependencies = this.value.info.dependencies;
-                var json = JSON.stringify(obj,null,2);
-                Fs.writeFile( this.value.path + '/package.json', json,function (err,state) {
+                var json = JSON.stringify(obj, null, 2);
+                Fs.writeFile( Path.join(this.value.path, '/package.json'), json, function (err, state) {
                     if (err) {
                         Editor.error(err);
                     }
@@ -155,7 +156,7 @@ Polymer({
     //     Shell.beep();
     // },
 
-    calculatedVersion: function (seat,append) {
+    calculatedVersion: function (seat, append) {
         var version = this.value.info.version;
         var tmp = version.split('.')[parseInt(seat)];
         var oldNumber =  parseInt(this.oldVersion.split('.')[parseInt(seat)]);
@@ -194,7 +195,7 @@ Polymer({
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[keyName].substr(0, dependencies[keyName].indexOf(dependencies[keyName].match(/[0-9]+/)[0]));
             dependencies[keyName] = modifier + res.info.version;
-            this.set('value.info.dependencies',dependencies);
+            this.set('value.info.dependencies', dependencies);
         }.bind(this));
     },
 
@@ -206,14 +207,14 @@ Polymer({
         var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
         Editor.sendRequestToCore('release-helper:query-host-version', keyName, function( version ) {
             hosts[keyName] = modifier + version;
-            this.set('value.info.hosts',hosts);
+            this.set('value.info.hosts', hosts);
         }.bind(this));
     },
 
     resetTag: function () {
         var path = this.value.path;
         var commands = 'git tag ' + this.tag + ' -d';
-        Editor.sendRequestToCore('release-helper:exec-cmd',commands,path, function( error,stdout,stderr ) {
+        Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
             if (!error) {
                 this.syncGitTag();
             }
@@ -223,7 +224,7 @@ Polymer({
         }.bind(this));
     },
 
-    _tagClass: function (tag,version) {
+    _tagClass: function (tag, version) {
         if (tag === version) {
             return 'tag mini green';
         }

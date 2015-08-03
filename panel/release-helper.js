@@ -1,5 +1,5 @@
 var Async = require('async');
-var git = require('git-utils');
+var GitUtils = require('git-utils');
 
 Editor.registerPanel('release-helper.panel',{
     is: 'release-helper',
@@ -41,7 +41,7 @@ Editor.registerPanel('release-helper.panel',{
 
             function (next) {
                 Editor.Package.queryInfos(function ( results ) {
-                    this.set('packages',results);
+                    this.set('packages', results);
                     next();
                 }.bind(this));
             }.bind(this),
@@ -52,7 +52,7 @@ Editor.registerPanel('release-helper.panel',{
                     for (var item in results) {
                         hosts.push({name: item, version: results[item]});
                     }
-                    this.set('hosts',hosts);
+                    this.set('hosts', hosts);
                     next();
                 }.bind(this));
             }.bind(this),
@@ -66,8 +66,8 @@ Editor.registerPanel('release-helper.panel',{
     },
 
     refresh: function () {
-        this.set('packages',[]);
-        this.set('hosts',[]);
+        this.set('packages', []);
+        this.set('hosts', []);
         this.dirty = false;
         this.$.checkbox.checked = false;
 
@@ -121,7 +121,7 @@ Editor.registerPanel('release-helper.panel',{
     },
 
     _hasModified: function (path) {
-        var repository = git.open(path);
+        var repository = GitUtils.open(path);
         for (var name in repository.getStatus()) {
             return true;
         }
@@ -132,7 +132,7 @@ Editor.registerPanel('release-helper.panel',{
         Async.series([
             function (next) {
                 var resetCommand =' git tag ' + tag + ' -d';
-                Editor.sendRequestToCore('release-helper:exec-cmd',resetCommand, path, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd', resetCommand, path, function( error,stdout,stderr ) {
                     if (!error) {
                         next();
                     }
@@ -141,7 +141,7 @@ Editor.registerPanel('release-helper.panel',{
 
             function (next) {
                 var cmd = 'git tag -a ' + tag + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
-                Editor.sendRequestToCore('release-helper:exec-cmd',cmd,path, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd', cmd, path, function( error, stdout, stderr ) {
                     if (!error) {
                         cb();
                     }
@@ -163,10 +163,10 @@ Editor.registerPanel('release-helper.panel',{
             if ( this._hasModified(packages[j].value.path) ) {
                 var cmd = 'git tag -a ' + packages[j].value.info.version + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
                 var path = packages[j].value.path;
-                Editor.sendRequestToCore('release-helper:exec-cmd', cmd,path, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd', cmd,path, function( error, stdout, stderr ) {
                         // if the tag already exists, 1.delete the tag 2.set the same tag again.
                         if (error && stderr.indexOf('already exists') > -1) {
-                            this._resetTag(packages[j].value.path,packages[j].value.info.version,function () {
+                            this._resetTag(packages[j].value.path, packages[j].value.info.version, function () {
                                 packages[j].syncGitTag();
                                 j++;
                                 confirmTags();
@@ -208,7 +208,7 @@ Editor.registerPanel('release-helper.panel',{
 
         var packages = this._getAllCheckedItems();
         for (var i = 0; i < packages.length; ++i) {
-            packages[i].calculatedVersion(this.$.select.value,true);
+            packages[i].calculatedVersion(this.$.select.value, true);
         }
     },
 
@@ -217,7 +217,7 @@ Editor.registerPanel('release-helper.panel',{
 
         var packages = this._getAllCheckedItems();
         for (var i = 0; i < packages.length; ++i) {
-            packages[i].calculatedVersion(this.$.select.value,false);
+            packages[i].calculatedVersion(this.$.select.value, false);
         }
     },
 });
