@@ -8,7 +8,7 @@
   },
   "main": "main.js",
   "menus": {
-    "Developer/release-helper": {
+    "Developer/Release Helper": {
       "message": "release-helper:open"
     }
   },
