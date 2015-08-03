@@ -150,13 +150,13 @@ Polymer({
         return 'icon fa fa-caret-right';
     },
 
-    _onOpenFoldClick: function (event) {
+    _onShowinFinderClick: function (event) {
         event.stopPropagation();
         Shell.showItemInFolder(this.value.path);
         Shell.beep();
     },
 
-    calculatedVersion: function (seat, append) {
+    updateVersion: function (seat, append) {
         var version = this.value.info.version;
         var tmp = version.split('.')[parseInt(seat)];
         var oldNumber =  parseInt(this.oldVersion.split('.')[parseInt(seat)]);
