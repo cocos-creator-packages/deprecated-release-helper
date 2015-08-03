@@ -48,7 +48,7 @@ Editor.registerPanel('release-helper.panel',{
 
             function (next) {
                 Editor.sendRequestToCore('release-helper:query-hosts-info', function( results ) {
-                    this.set('hosts',results.host);
+                    this.set('hosts',results);
                     next();
                 }.bind(this));
             }.bind(this),
@@ -128,7 +128,7 @@ Editor.registerPanel('release-helper.panel',{
         Async.series([
             function (next) {
                 var resetCommand = 'cd ' + path + ' && ' + ' git tag ' + tag + ' -d';
-                Editor.sendRequestToCore('release-helper:child_process',resetCommand, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec_cmd',resetCommand, function( error,stdout,stderr ) {
                     if (!error) {
                         next();
                     }
@@ -140,7 +140,7 @@ Editor.registerPanel('release-helper.panel',{
                 var commands = '';
                 commands += 'cd ' + path + ' && ';
                 commands += cmd + '\r\n';
-                Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
                     if (!error) {
                         cb();
                     }
@@ -164,7 +164,7 @@ Editor.registerPanel('release-helper.panel',{
                 var commands = '';
                 commands += 'cd ' + packages[j].value.path + ' && ';
                 commands += cmd + '\r\n';
-                Editor.sendRequestToCore('release-helper:child_process', commands, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec_cmd', commands, function( error,stdout,stderr ) {
                         // if the tag already exists, 1.delete the tag 2.set the same tag again.
                         if (error && stderr.indexOf('already exists') > -1) {
                             this._resetTag(packages[j].value.path,packages[j].value.info.version,function () {

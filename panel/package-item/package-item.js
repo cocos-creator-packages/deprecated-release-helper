@@ -94,7 +94,7 @@ Polymer({
         var path = this.value.path;
 
         var commands = 'cd ' + path + ' && ' + 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
-        Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+        Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
             if (!error) {
                 var tags = stdout.split('\n');
                 this.tag = tags[tags.length - 2];
@@ -209,14 +209,14 @@ Polymer({
             hosts[keyName] = modifier + versions[keyName];
 
             this.set('value.info.hosts',[]);
-            this.set('value.info.hosts',results.hosts);
+            this.set('value.info.hosts',results);
         }.bind(this));
     },
 
     resetTag: function () {
         var path = this.value.path;
         var commands = 'cd ' + path + ' && ' + 'git tag ' + this.tag + ' -d';
-        Editor.sendRequestToCore('release-helper:child_process',commands, function( error,stdout,stderr ) {
+        Editor.sendRequestToCore('release-helper:exec_cmd',commands, function( error,stdout,stderr ) {
             if (!error) {
                 this.syncGitTag();
             }

@@ -14,13 +14,10 @@ module.exports = {
         for (var item in Editor.versions) {
             hosts.push({name: item, version: Editor.versions[item]});
         }
-        var obj = {};
-        obj.hosts = hosts;
-        obj.versions = Editor.versions;
-        reply(obj);
+        reply(hosts);
     },
 
-    'release-helper:child_process': function (reply,cmd) {
+    'release-helper:exec_cmd': function (reply,cmd) {
         var child_process = require('child_process');
         child_process.exec(cmd,function(error, stdout, stderr){
             reply(error, stdout, stderr);
