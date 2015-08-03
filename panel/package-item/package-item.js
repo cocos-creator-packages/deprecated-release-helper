@@ -110,7 +110,7 @@ Polymer({
     },
 
     confirm: function () {
-        Fs.readFile(this.value.path + '/package.json', function (err, data) {
+        Fs.readFile(Path.join(this.value.path, 'package.json'), function (err, data) {
             if (!err) {
                 var obj = JSON.parse(data.toString());
                 obj.version = this.value.info.version;
@@ -118,7 +118,7 @@ Polymer({
                 obj.dependencies = this.value.info.hosts;
                 obj.dependencies = this.value.info.dependencies;
                 var json = JSON.stringify(obj, null, 2);
-                Fs.writeFile( Path.join(this.value.path, '/package.json'), json, function (err, state) {
+                Fs.writeFile( Path.join(this.value.path, 'package.json'), json, function (err, state) {
                     if (err) {
                         Editor.error(err);
                     }
@@ -156,36 +156,8 @@ Polymer({
         Shell.beep();
     },
 
-    updateVersion: function (seat, append) {
-        var version = this.value.info.version;
-        var tmp = version.split('.')[parseInt(seat)];
-        var oldNumber =  parseInt(this.oldVersion.split('.')[parseInt(seat)]);
-        var number = tmp.match(/[0-9]+/)[0];
-        var modifier = tmp.substr(0, tmp.indexOf(tmp.match(/[0-9]+/)[0]));
-        if (append) {
-            number = modifier + (Math.clamp(parseInt(number) + 1, oldNumber, Number.MAX_VALUE));
-        }
-        else {
-            number = modifier + (Math.clamp(parseInt(number) - 1, oldNumber, Number.MAX_VALUE));
-        }
-
-        switch (seat) {
-            case '0':
-                this.set('value.info.version', number + '.' +
-                version.split('.')[1] + '.' +
-                version.split('.')[2]);
-                break;
-            case '1':
-                this.set('value.info.version',version.split('.')[0] + '.' +
-                number + '.' +
-                version.split('.')[2]);
-                break;
-            case '2':
-                this.set('value.info.version',version.split('.')[0] + '.' +
-                version.split('.')[1] + '.' +
-                number);
-                break;
-        }
+    updateVersion: function (type) {
+        this.set('value.info.version',Semver.inc(this.value.info.version,type));
     },
 
     _refreshDependencies: function (event) {

@@ -7,21 +7,17 @@
     <template>
         <editor-toolbar>
             <div class="layout horizontal center space">
-                <span> Make All Change : </span>
-                <editor-select value="2" id="select">
-                    <editor-option value="0">Major</editor-option>
-                    <editor-option value="1">Minor</editor-option>
-                    <editor-option value="2">Patch</editor-option>
+                <editor-select value="patch" id="select">
+                    <editor-option value="major">Major</editor-option>
+                    <editor-option value="minor">Minor</editor-option>
+                    <editor-option value="patch">Patch</editor-option>
                 </editor-select>
                 <div>
                     <editor-button on-click="_increaseVersion">
-                        <i class="fa fa-angle-up"></i>
-                    </editor-button>
-                    <editor-button on-click="_decreaseVersion">
-                        <i class="fa fa-angle-down"></i>
+                        Increase Version
                     </editor-button>
                 </div>
-                <editor-button on-click="_makeTags"> Tag </editor-button>
+                <editor-button on-click="_makeTags">Add Tag</editor-button>
             </div>
 
             <div>

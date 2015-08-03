@@ -208,16 +208,7 @@ Editor.registerPanel('release-helper.panel',{
 
         var packages = this._getAllCheckedItems();
         for (var i = 0; i < packages.length; ++i) {
-            packages[i].updateVersion(this.$.select.value, true);
-        }
-    },
-
-    _decreaseVersion: function (event) {
-        event.stopPropagation();
-
-        var packages = this._getAllCheckedItems();
-        for (var i = 0; i < packages.length; ++i) {
-            packages[i].updateVersion(this.$.select.value, false);
+            packages[i].updateVersion(this.$.select.value);
         }
     },
 });
