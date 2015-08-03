@@ -18,28 +18,28 @@
         <div class="details">
             <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
             <div id="hosts">
-                <template is="dom-repeat" items="[[obj2Array(value.info.hosts)]]">
-                    <div class="items">
+                <template is="dom-repeat" id="hoststemplate" items="[[obj2Array(value.info.hosts)]]">
+                    <div class="item">
                         <div>
                             <span class="name flex-1" id="name">[[item.name]]</span>
-                            <i class="fa fa-refresh refresh" name$="[[item.name]]" on-click="_refreshHosts"></i>
+                            <i class="fa fa-refresh refresh" on-click="_refreshHosts"></i>
                         </div>
                         <div class="version" id="version">
-                            <editor-input value="{{item.version}}" data-name$="[[item.name]]" on-value-changed="_onHostChanged"></editor-input>
+                            <editor-input value="{{item.version}}" on-value-changed="_onHostChanged"></editor-input>
                         </div>
                     </div>
                 </template>
             </div>
             <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
             <div id="dependencies">
-                <template is="dom-repeat" items="[[obj2Array(value.info.dependencies)]]">
-                    <div class="items">
+                <template is="dom-repeat" id="depetemplate" items="[[obj2Array(value.info.dependencies)]]">
+                    <div class="item">
                         <div>
                             <span class="name flex-1">[[item.name]]</span>
-                            <i class="fa fa-refresh refresh" name$="[[item.name]]" on-click="_refreshDependencies"></i>
+                            <i class="fa fa-refresh refresh" on-click="_refreshDependencies"></i>
                         </div>
                         <div class="version">
-                            <editor-input value="{{item.version}}" data-name$="[[item.name]]" on-value-changed="_onDependenciesChanged"></editor-input>
+                            <editor-input value="{{item.version}}" on-value-changed="_onDependenciesChanged"></editor-input>
                         </div>
                     </div>
                 </template>

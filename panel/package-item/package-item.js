@@ -66,7 +66,7 @@ Polymer({
 
     _versionChanged: function (event) {
         this.verify(event.target);
-        if (!Semver.satisfies(event.target.value, '>=' + this.oldVersion)) {
+        if (!Semver.gt(event.target.value, this.oldVersion)) {
             event.target.value = this.oldVersion;
         }
         this.callDirty();
@@ -74,14 +74,14 @@ Polymer({
 
     _onHostChanged: function (event) {
         this.verify(event.target);
-        var keyName = event.target.getAttribute('data-name');
+        var keyName = this.$.hoststemplate.itemForElement(event.target).name;
         this.value.info.hosts[keyName] = event.target.value;
         this.callDirty();
     },
 
     _onDependenciesChanged: function (event) {
         this.verify(event.target);
-        var keyName = event.target.getAttribute('data-name');
+        var keyName = this.$.depetemplate.itemForElement(event.target).name;
         this.value.info.dependencies[keyName] = event.target.value;
         this.callDirty();
     },
@@ -134,7 +134,7 @@ Polymer({
 
     verify: function (target) {
         // Checking the version's format
-        if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
+        if (!Semver.valid(target.value)) {
             target.invalid = true;
             this.folded = true;
         }
