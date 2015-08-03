@@ -194,7 +194,6 @@ Polymer({
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[keyName].substr(0, dependencies[keyName].indexOf(dependencies[keyName].match(/[0-9]+/)[0]));
             dependencies[keyName] = modifier + res.info.version;
-            this.set('value.info.dependencies',[]);
             this.set('value.info.dependencies',dependencies);
         }.bind(this));
     },
@@ -203,13 +202,11 @@ Polymer({
         event.stopPropagation();
 
         var keyName = event.target.getAttribute('name');
-        Editor.sendRequestToCore('release-helper:query-hosts-info', function( results ) {
-            var hosts = this.value.info.hosts;
-            var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
-            hosts[keyName] = modifier + versions[keyName];
-
-            this.set('value.info.hosts',[]);
-            this.set('value.info.hosts',results);
+        var hosts = this.value.info.hosts;
+        var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
+        Editor.sendRequestToCore('release-helper:query-host-version', keyName, function( version ) {
+            hosts[keyName] = modifier + version;
+            this.set('value.info.hosts',hosts);
         }.bind(this));
     },
 

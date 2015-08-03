@@ -10,11 +10,11 @@ module.exports = {
     },
 
     'release-helper:query-hosts-info': function (reply) {
-        var hosts = [];
-        for (var item in Editor.versions) {
-            hosts.push({name: item, version: Editor.versions[item]});
-        }
-        reply(hosts);
+        reply(Editor.versions);
+    },
+
+    'release-helper:query-host-version': function (reply,name) {
+        reply(Editor.versions[name]);
     },
 
     'release-helper:exec_cmd': function (reply,cmd) {
