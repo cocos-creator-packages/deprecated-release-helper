@@ -107,10 +107,26 @@ editor-input {
 }
 
 :host ::content editor-toolbar .btn.editor-button {
-    background-color: rgb(94, 94, 94);
+    background-color: rgb(54, 54, 54);
     border-radius: 2px;
+    padding: 2px 4px;
+    border: 1px solid rgb(90, 90, 90);
 }
 
 :host ::content editor-toolbar [disabled] .btn.editor-button {
   background: #535252 !important;
+}
+
+table {
+    width: 100%;
+}
+
+tr,th {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.head {
+    width: 50%;
 }

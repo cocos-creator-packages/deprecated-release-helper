@@ -1,4 +1,5 @@
 var Fs = require('fire-fs');
+var Async = require('async');
 var Shell = require('shell');
 var Semver = require('semver');
 var Path = require('fire-path');
@@ -59,6 +60,13 @@ Polymer({
         return array;
     },
 
+    formatTag: function (tag) {
+        if (!tag) {
+            return 'NO TAG';
+        }
+        return tag;
+    },
+
     _onFoldClick: function (event) {
         event.stopPropagation();
         this.folded = !this.folded;
@@ -74,14 +82,14 @@ Polymer({
 
     _onHostChanged: function (event) {
         this.verify(event.target);
-        var keyName = this.$.hoststemplate.itemForElement(event.target).name;
+        var keyName = this.$.hostVersionTemplate.itemForElement(event.target).name;
         this.value.info.hosts[keyName] = event.target.value;
         this.setDirty();
     },
 
     _onDependenciesChanged: function (event) {
         this.verify(event.target);
-        var keyName = this.$.depetemplate.itemForElement(event.target).name;
+        var keyName = this.$.depVersionTemplate.itemForElement(event.target).name;
         this.value.info.dependencies[keyName] = event.target.value;
         this.setDirty();
     },
@@ -93,18 +101,62 @@ Polymer({
 
     syncGitTag: function (cb) {
         var path = this.value.path;
-
-        var commands = 'git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags';
+        var commands = 'git for-each-ref --sort=taggerdate refs/tags --format \'%(refname)\'';
         Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
             if (!error) {
+                if (!stdout) {
+                    this.set('tag','');
+                    if (cb) {
+                        cb();
+                    }
+                    return;
+                }
                 var tags = stdout.split('\n');
-                this.tag = tags[tags.length - 2];
+                var reftags = tags[tags.length - 2];
+                var tag = reftags.split('/');
+                tag = tag[tag.length-1];
+                this.set('tag',tag);
                 if (cb) {
                     cb(this.tag);
                 }
             }
             else {
                 Editor.error(stderr);
+            }
+        }.bind(this));
+    },
+
+    fetchTag: function (cb) {
+        var path = this.value.path;
+        this.$.loader.hidden = false;
+        Async.series([
+            function (next) {
+                var commands = 'git tag -l | xargs git tag -d';
+                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
+                    if (!error) {
+                        next();
+                    }
+                    else {
+                        Editor.error(stderr);
+                    }
+                });
+            },
+
+            function (next) {
+                var commands = 'git fetch --tags';
+                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
+                    if (!error) {
+                        next();
+                    }
+                    else {
+                        Editor.error(stderr);
+                    }
+                });
+            } ,
+        ],function () {
+            if (cb) {
+                this.$.loader.hidden = true;
+                cb();
             }
         }.bind(this));
     },
@@ -134,7 +186,7 @@ Polymer({
 
     verify: function (target) {
         // Checking the version's format
-        if (!Semver.valid(target.value)) {
+        if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
             target.invalid = true;
             this.folded = true;
         }
@@ -145,9 +197,9 @@ Polymer({
 
     _foldClass: function (folded) {
         if (folded) {
-            return 'icon fa fa-caret-down';
+            return 'icon pointer fa fa-caret-down';
         }
-        return 'icon fa fa-caret-right';
+        return 'icon pointer fa fa-caret-right';
     },
 
     _onShowinFinderClick: function (event) {
@@ -162,7 +214,8 @@ Polymer({
 
     _refreshDependencies: function (event) {
         event.stopPropagation();
-        var keyName = event.target.getAttribute('name');
+        var keyName = this.$.deptemplate.itemForElement(event.target).name;
+
         Editor.Package.queryInfo(keyName,function (res) {
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[keyName].substr(0, dependencies[keyName].indexOf(dependencies[keyName].match(/[0-9]+/)[0]));
@@ -174,10 +227,10 @@ Polymer({
     _refreshHosts: function (event) {
         event.stopPropagation();
 
-        var keyName = event.target.getAttribute('name');
-        var hosts = this.value.info.hosts;
-        var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
+        var keyName = this.$.hoststemplate.itemForElement(event.target).name;
         Editor.sendRequestToCore('release-helper:query-host-version', keyName, function( version ) {
+            var hosts = this.value.info.hosts;
+            var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
             hosts[keyName] = modifier + version;
             this.set('value.info.hosts', hosts);
         }.bind(this));
@@ -191,7 +244,7 @@ Polymer({
                 this.syncGitTag();
             }
             else {
-                Editor.error(stderr);
+                Editor.error(this.value.info.name + ': ' + stderr);
             }
         }.bind(this));
     },

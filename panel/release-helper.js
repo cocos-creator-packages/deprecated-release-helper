@@ -193,6 +193,26 @@ Editor.registerPanel('release-helper.panel',{
         this.setTags();
     },
 
+    _onFetchTagsClick: function (event) {
+        event.stopPropagation();
+
+        var packages = this._getAllCheckedItems();
+        var i = 0;
+        var fetchTag = function () {
+            if (i >= packages.length) {
+                return;
+            }
+            packages[i].fetchTag( function () {
+                packages[i].syncGitTag( function () {
+                    i++;
+                    fetchTag();
+                });
+            });
+        };
+
+        fetchTag();
+    },
+
     _onSelectChanged: function (event) {
         event.stopPropagation();
 
