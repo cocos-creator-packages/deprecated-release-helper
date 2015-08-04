@@ -89,7 +89,7 @@ Polymer({
 
     _onDependenciesChanged: function (event) {
         this.verify(event.target);
-        var keyName = this.$.depeVersionTemplate.itemForElement(event.target).name;
+        var keyName = this.$.depVersionTemplate.itemForElement(event.target).name;
         this.value.info.dependencies[keyName] = event.target.value;
         this.setDirty();
     },
@@ -214,7 +214,7 @@ Polymer({
 
     _refreshDependencies: function (event) {
         event.stopPropagation();
-        var keyName = event.target.getAttribute('name');
+        var keyName = this.$.deptemplate.itemForElement(event.target).name;
 
         Editor.Package.queryInfo(keyName,function (res) {
             var dependencies = this.value.info.dependencies;

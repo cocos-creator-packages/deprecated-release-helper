@@ -39,7 +39,7 @@
                 </div>
                 <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
                 <div id="dependencies">
-                    <template is="dom-repeat" id="depetemplate" items="[[obj2Array(value.info.dependencies)]]">
+                    <template is="dom-repeat" id="deptemplate" items="[[obj2Array(value.info.dependencies)]]">
                         <div class="item">
                             <div>
                                 <span class="name flex-1">[[item.name]]</span>
@@ -59,7 +59,7 @@
                         </template>
                     </div>
                     <div class="detailinput">
-                        <template is="dom-repeat" id="depeVersionTemplate" items="[[obj2Array(value.info.dependencies)]]">
+                        <template is="dom-repeat" id="depVersionTemplate" items="[[obj2Array(value.info.dependencies)]]">
                             <div class="version" id="version">
                                 <editor-input value="{{item.version}}" on-value-changed="_onDependenciesChanged"></editor-input>
                             </div>
