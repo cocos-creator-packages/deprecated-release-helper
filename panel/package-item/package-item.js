@@ -105,8 +105,8 @@ Polymer({
         Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
             if (!error) {
                 if (!stdout) {
+                    this.set('tag','');
                     if (cb) {
-                        this.set('tag','');
                         cb();
                     }
                     return;
@@ -244,7 +244,7 @@ Polymer({
                 this.syncGitTag();
             }
             else {
-                Editor.error(stderr);
+                Editor.error(this.value.info.name + ': ' + stderr);
             }
         }.bind(this));
     },
