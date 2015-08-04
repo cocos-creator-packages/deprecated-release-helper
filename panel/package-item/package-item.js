@@ -132,7 +132,7 @@ Polymer({
         Async.series([
             function (next) {
                 var commands = 'git tag -l | xargs git tag -d';
-                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
                     if (!error) {
                         next();
                     }
@@ -144,7 +144,7 @@ Polymer({
 
             function (next) {
                 var commands = 'git fetch --tags';
-                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
+                Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
                     if (!error) {
                         next();
                     }
