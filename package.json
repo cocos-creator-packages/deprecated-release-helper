@@ -4,7 +4,7 @@
   "description": "release-helper for Fireball",
   "author": "Firebox Technology",
   "hosts": {
-    "editor-framework": "^0.3.13"
+    "editor-framework": "^0.3.10"
   },
   "main": "main.js",
   "menus": {
