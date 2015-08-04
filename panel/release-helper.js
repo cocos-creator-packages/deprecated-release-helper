@@ -160,7 +160,7 @@ Editor.registerPanel('release-helper.panel',{
                 return;
             }
             // check the git status
-            if ( this._hasModified(packages[j].value.path) ) {
+            if ( !this._hasModified(packages[j].value.path) ) {
                 var cmd = 'git tag -a ' + packages[j].value.info.version + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
                 var path = packages[j].value.path;
                 Editor.sendRequestToCore('release-helper:exec-cmd', cmd,path, function( error, stdout, stderr ) {
@@ -191,6 +191,26 @@ Editor.registerPanel('release-helper.panel',{
         event.stopPropagation();
 
         this.setTags();
+    },
+
+    _onFetchTagsClick: function (event) {
+        event.stopPropagation();
+
+        var packages = this._getAllCheckedItems();
+        var i = 0;
+        var fetchTag = function () {
+            if (i >= packages.length) {
+                return;
+            }
+            packages[i].fetchTag( function () {
+                packages[i].syncGitTag( function () {
+                    i++;
+                    fetchTag();
+                });
+            });
+        };
+
+        fetchTag();
     },
 
     _onSelectChanged: function (event) {
