@@ -247,7 +247,7 @@ Polymer({
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[name].substr(0, dependencies[name].indexOf(dependencies[name].match(/[0-9]+/)[0]));
             dependencies[name] = modifier + res.info.version;
-            this.set('value.info.dependencies', []);
+            this.set('value.info.dependencies', {});
             this.set('value.info.dependencies', dependencies);
         }.bind(this));
     },
@@ -257,7 +257,7 @@ Polymer({
             var hosts = this.value.info.hosts;
             var modifier = hosts[name].substr(0, hosts[name].indexOf(hosts[name].match(/[0-9]+/)[0]));
             hosts[name] = modifier + version;
-            this.set('value.info.hosts', []);
+            this.set('value.info.hosts', {});
             this.set('value.info.hosts', hosts);
         }.bind(this));
     },
