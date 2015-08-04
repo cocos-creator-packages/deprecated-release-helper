@@ -41,11 +41,21 @@ Polymer({
             type: String,
             value: '',
         },
+
+        oldVersions: {
+            type: Object,
+            value: function () {
+                return {};
+            },
+        }
     },
 
     ready: function () {
         this.oldVersion = this.value.info.version;
         this.syncGitTag();
+
+        this.oldVersions.hosts = this.value.info.hosts;
+        this.oldVersions.dependencies = this.value.info.dependencies;
     },
 
     _cancelSelect: function () {
@@ -67,6 +77,14 @@ Polymer({
         return tag;
     },
 
+    _oldHostsVersion: function (item) {
+        return this.oldVersions.hosts[item.name];
+    },
+
+    _oldDepsVersion: function (item) {
+        return this.oldVersions.dependencies[item.name];
+    },
+
     _onFoldClick: function (event) {
         event.stopPropagation();
         this.folded = !this.folded;
@@ -82,14 +100,14 @@ Polymer({
 
     _onHostChanged: function (event) {
         this.verify(event.target);
-        var keyName = this.$.hostVersionTemplate.itemForElement(event.target).name;
+        var keyName = this.$.hoststemplate.itemForElement(event.target).name;
         this.value.info.hosts[keyName] = event.target.value;
         this.setDirty();
     },
 
     _onDependenciesChanged: function (event) {
         this.verify(event.target);
-        var keyName = this.$.depVersionTemplate.itemForElement(event.target).name;
+        var keyName = this.$.deptemplate.itemForElement(event.target).name;
         this.value.info.dependencies[keyName] = event.target.value;
         this.setDirty();
     },
@@ -161,6 +179,15 @@ Polymer({
         }.bind(this));
     },
 
+    syncDependencies: function () {
+        for (var hostName in this.value.info.hosts) {
+            this._refreshHosts(hostName);
+        }
+        for (var depName in this.value.info.dependencies) {
+            this._refreshDependencies(depName);
+        }
+    },
+
     confirm: function () {
         Fs.readFile(Path.join(this.value.path, 'package.json'), function (err, data) {
             if (!err) {
@@ -212,28 +239,37 @@ Polymer({
         this.set('value.info.version',Semver.inc(this.value.info.version,type));
     },
 
-    _refreshDependencies: function (event) {
-        event.stopPropagation();
-        var keyName = this.$.deptemplate.itemForElement(event.target).name;
-
-        Editor.Package.queryInfo(keyName,function (res) {
+    _refreshDependencies: function (name) {
+        Editor.Package.queryInfo(name,function (res) {
+            if (!res.info) {
+                return;
+            }
             var dependencies = this.value.info.dependencies;
-            var modifier = dependencies[keyName].substr(0, dependencies[keyName].indexOf(dependencies[keyName].match(/[0-9]+/)[0]));
-            dependencies[keyName] = modifier + res.info.version;
+            var modifier = dependencies[name].substr(0, dependencies[name].indexOf(dependencies[name].match(/[0-9]+/)[0]));
+            dependencies[name] = modifier + res.info.version;
             this.set('value.info.dependencies', dependencies);
         }.bind(this));
     },
 
-    _refreshHosts: function (event) {
-        event.stopPropagation();
-
-        var keyName = this.$.hoststemplate.itemForElement(event.target).name;
-        Editor.sendRequestToCore('release-helper:query-host-version', keyName, function( version ) {
+    _refreshHosts: function (name) {
+        Editor.sendRequestToCore('release-helper:query-host-version', name, function( version ) {
             var hosts = this.value.info.hosts;
-            var modifier = hosts[keyName].substr(0, hosts[keyName].indexOf(hosts[keyName].match(/[0-9]+/)[0]));
-            hosts[keyName] = modifier + version;
+            var modifier = hosts[name].substr(0, hosts[name].indexOf(hosts[name].match(/[0-9]+/)[0]));
+            hosts[name] = modifier + version;
             this.set('value.info.hosts', hosts);
         }.bind(this));
+    },
+
+    _onRefreshHostsClick: function (event) {
+        event.stopPropagation();
+        var name = this.$.hoststemplate.itemForElement(event.target).name;
+        this._refreshHosts(name);
+    },
+
+    _onRefreshDependenciesClick: function (event) {
+        event.stopPropagation();
+        var name = this.$.deptemplate.itemForElement(event.target).name;
+        this._refreshDependencies(name);
     },
 
     resetTag: function () {

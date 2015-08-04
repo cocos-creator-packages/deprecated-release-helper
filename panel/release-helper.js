@@ -213,6 +213,15 @@ Editor.registerPanel('release-helper.panel',{
         fetchTag();
     },
 
+    _onSyncDependenciesClick: function (event) {
+        event.stopPropagation();
+
+        var packages = this._getAllCheckedItems();
+        for (var item in packages) {
+            packages[item].syncDependencies();
+        }
+    },
+
     _onSelectChanged: function (event) {
         event.stopPropagation();
 

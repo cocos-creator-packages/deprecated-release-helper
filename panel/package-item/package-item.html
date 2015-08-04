@@ -25,48 +25,54 @@
         </div>
 
         <div class="details">
-            <div class="left">
+            <div class="flex-1 contain">
                 <span class="detailname"><i class="icon fa fa-suitcase"></i>hosts</span>
-                <div id="hosts">
+                <div id="hosts" class="items">
                     <template is="dom-repeat" id="hoststemplate" items="[[obj2Array(value.info.hosts)]]">
-                        <div class="item">
-                            <div>
-                                <span class="name flex-1" id="name">[[item.name]]</span>
-                                <i class="fa fa-refresh refresh" on-click="_refreshHosts"></i>
+                        <div class="layout center horizontal between">
+                            <div class="left">
+                                <div class="item">
+                                    <div>
+                                        <span class="name flex-1" id="name">[[item.name]]</span>
+                                        <i class="fa fa-refresh refresh" on-click="_onRefreshHostsClick"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="version" id="version">
+                                    <span class="oldversion">[[_oldHostsVersion(item)]]</span>
+                                    <i class="fa fa-long-arrow-right oldversion"></i>
+                                    <editor-input value="{{item.version}}" on-value-changed="_onHostChanged"></editor-input>
+                                </div>
                             </div>
                         </div>
                     </template>
                 </div>
+
                 <span class="detailname"><i class="icon fa fa-hdd-o"></i>dependencies</span>
-                <div id="dependencies">
+                <div id="dependencies" class="items">
                     <template is="dom-repeat" id="deptemplate" items="[[obj2Array(value.info.dependencies)]]">
-                        <div class="item">
-                            <div>
-                                <span class="name flex-1">[[item.name]]</span>
-                                <i class="fa fa-refresh refresh" on-click="_refreshDependencies"></i>
+                        <div class="layout center horizontal between">
+                            <div class="left">
+                                <div class="item">
+                                    <div>
+                                        <span class="name flex-1">[[item.name]]</span>
+                                        <i class="fa fa-refresh refresh" on-click="_onRefreshDependenciesClick"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="version" id="version">
+                                    <span class="oldversion">[[_oldDepsVersion(item)]]</span>
+                                    <i class="fa fa-long-arrow-right oldversion"></i>
+                                    <editor-input value="{{item.version}}" on-value-changed="_onDependenciesChanged"></editor-input>
+                                </div>
                             </div>
                         </div>
                     </template>
                 </div>
             </div>
-            <div class="right">
-                <div class="layout-vertical">
-                    <div class="detailinput">
-                        <template is="dom-repeat" id="hostVersionTemplate" items="[[obj2Array(value.info.hosts)]]">
-                            <div class="version" id="version">
-                                <editor-input value="{{item.version}}" on-value-changed="_onHostChanged"></editor-input>
-                            </div>
-                        </template>
-                    </div>
-                    <div class="detailinput">
-                        <template is="dom-repeat" id="depVersionTemplate" items="[[obj2Array(value.info.dependencies)]]">
-                            <div class="version" id="version">
-                                <editor-input value="{{item.version}}" on-value-changed="_onDependenciesChanged"></editor-input>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
+        </div>
     </template>
 </dom-module>
 <script type="text/javascript" src="package-item.js"></script>

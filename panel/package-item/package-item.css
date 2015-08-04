@@ -135,9 +135,31 @@ editor-input {
 
 .detailinput {
     margin-top: 20px;
+    min-height: 0px;
     flex-direction: column;
 }
 
-.detailinput .version {
+.between {
+    justify-content: space-between;
+}
+
+.version {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     margin-bottom: 3px;
+}
+
+.contain {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.items {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
 }
