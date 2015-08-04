@@ -186,7 +186,7 @@ Polymer({
 
     verify: function (target) {
         // Checking the version's format
-        if (!Semver.valid(target.value)) {
+        if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
             target.invalid = true;
             this.folded = true;
         }
