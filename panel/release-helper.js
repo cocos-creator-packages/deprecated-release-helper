@@ -243,7 +243,7 @@ Editor.registerPanel('release-helper.panel',{
             builtin[dumpPkgs[item].value.info.name] = dumpPkgs[item].tag;
         }
         dumpObj.builtin = builtin;
-        
+
         var hostsNames = [];
         var runtimesNames = [];
 
@@ -255,22 +255,21 @@ Editor.registerPanel('release-helper.panel',{
                 }
                 return;
             }
-            else {
-                this._getHostTag(hostsNames[index], function (tag) {
-                    hosts[hostsNames[index]] = tag;
-                    if (index >= runtimesNames.length) {
+
+            this._getHostTag(hostsNames[index], function (tag) {
+                hosts[hostsNames[index]] = tag;
+                if (index >= runtimesNames.length) {
+                    index ++;
+                    pushTags(cb);
+                }
+                else {
+                    this._getHostTag('runtime/' + runtimesNames[index], function (tag) {
+                        runtime[runtimesNames[index]] = tag;
                         index ++;
                         pushTags(cb);
-                    }
-                    else {
-                        this._getHostTag('runtime/' + runtimesNames[index], function (tag) {
-                            runtime[runtimesNames[index]] = tag;
-                            index ++;
-                            pushTags(cb);
-                        });
-                    }
-                }.bind(this));
-            }
+                    });
+                }
+            }.bind(this));
         }.bind(this);
 
         var whiteList = ['asset-db', 'canvas-studio', 'editor-framework', 'engine-framework', 'fireball'];
