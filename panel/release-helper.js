@@ -271,15 +271,17 @@ Editor.registerPanel('release-helper.panel',{
                 }.bind(this));
             }
         }.bind(this);
-
+        var whiteList = ['asset-db', 'canvas-studio', 'editor-framework', 'engine-framework', 'fireball'];
         Editor.sendRequestToCore('release-helper:query-hosts-infos', function( results ) {
             Fs.readdir(Editor.url('app://runtime'), function (error, list) {
                 if (!error) {
                     runtimesNames = list;
 
                     for (var item in results) {
-                        if (item !== 'cocos2d-html5' && item !== 'runtime-cocos2d-html5') {
-                            hostsNames.push(item);
+                        for (var i in whiteList) {
+                            if (item === whiteList[i]) {
+                                hostsNames.push(item);
+                            }
                         }
                     }
                     pushTags(function () {
