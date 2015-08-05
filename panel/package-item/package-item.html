@@ -4,11 +4,9 @@
         <div class="pkg">
             <div class="left">
                 <div class="pkginfo">
-                    <div class="icons">
-                        <editor-checkbox checked="{{_checked}}"></editor-checkbox>
-                        <i class$="[[_foldClass(folded)]]" on-click="_onFoldClick"></i>
-                        <i class="fa fa-folder fold" on-click="_onShowinFinderClick"></i>
-                    </div>
+                    <editor-checkbox checked="{{_checked}}" class="flex-none"></editor-checkbox>
+                    <i class$="[[_foldClass(folded)]]" on-click="_onFoldClick"></i>
+                    <i class="fa fa-folder fold flex-none" on-click="_onShowinFinderClick"></i>
                     <span class="name pkgname">[[value.info.name]]</span>
                     <editor-label class$="{{_tagClass(tag,value.info.version)}}">[[formatTag(tag)]]</editor-label>
                     <i class="fa fa-times delete" on-click="resetTag"></i>

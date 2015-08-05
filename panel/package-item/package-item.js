@@ -224,9 +224,9 @@ Polymer({
 
     _foldClass: function (folded) {
         if (folded) {
-            return 'icon pointer fa fa-caret-down';
+            return 'icon pointer flex-none fa fa-caret-down';
         }
-        return 'icon pointer fa fa-caret-right';
+        return 'icon pointer flex-none fa fa-caret-right';
     },
 
     _onShowinFinderClick: function (event) {

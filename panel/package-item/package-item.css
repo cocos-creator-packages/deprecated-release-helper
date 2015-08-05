@@ -162,9 +162,3 @@ editor-input {
     justify-content: space-between;
     flex: 1;
 }
-
-.icons {
-    display: flex;
-    width: 70px;
-    min-width: 70px;
-}
