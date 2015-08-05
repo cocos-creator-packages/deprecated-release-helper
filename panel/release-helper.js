@@ -1,5 +1,7 @@
 var Async = require('async');
 var GitUtils = require('git-utils');
+var Fs = require('fire-fs');
+var Path = require('fire-path');
 
 Editor.registerPanel('release-helper.panel',{
     is: 'release-helper',
@@ -220,6 +222,114 @@ Editor.registerPanel('release-helper.panel',{
         for (var item in packages) {
             packages[item].syncDependencies();
         }
+    },
+
+    _onDumpClick: function (event) {
+        event.stopPropagation();
+
+        var packages = this._getAllCheckedItems();
+        var dumpPkgs = [];
+        for (var i = 0; i < packages.length; ++i) {
+            if (packages[i].tag === packages[i].value.info.version) {
+                dumpPkgs.push(packages[i]);
+            }
+        }
+        var dumpObj = {};
+
+        var builtin = {};
+        var hosts = {};
+        var runtime = {};
+
+        for (var item in dumpPkgs) {
+            builtin[dumpPkgs[item].value.info.name] = dumpPkgs[item].tag;
+        }
+        dumpObj.builtin = builtin;
+        var hostsNames = [];
+        var runtimesNames = [];
+
+        var index = 0;
+        var pushTags = function (cb) {
+            if (index >= hostsNames.length) {
+                if (cb) {
+                    cb();
+                }
+                return;
+            }
+            else {
+                this._getHostTag(hostsNames[index], function (tag) {
+                    hosts[hostsNames[index]] = tag;
+                    if (index >= runtimesNames.length) {
+                        index ++;
+                        pushTags(cb);
+                    }
+                    else {
+                        this._getHostTag('runtime/' + runtimesNames[index], function (tag) {
+                            runtime[runtimesNames[index]] = tag;
+                            index ++;
+                            pushTags(cb);
+                        });
+                    }
+                }.bind(this));
+            }
+        }.bind(this);
+
+        Editor.sendRequestToCore('release-helper:query-hosts-infos', function( results ) {
+            Fs.readdir(Editor.url('app://runtime'),function (error,list) {
+                if (!error) {
+                    runtimesNames = list;
+
+                    for (var item in results) {
+                        if (item !== 'cocos2d-html5' && item !== 'runtime-cocos2d-html5') {
+                            hostsNames.push(item);
+                        }
+                    }
+                    pushTags(function () {
+                        dumpObj.host = hosts;
+                        dumpObj.runtime = runtime;
+                        this._saveConfig(dumpObj, function () {
+                            Editor.success('Dump versions config succeed!');
+                        });
+                    }.bind(this));
+                }
+                else {
+                    Editor.error(error);
+                }
+            }.bind(this));
+        }.bind(this));
+    },
+
+    _saveConfig: function (obj, cb) {
+        var json = JSON.stringify(obj, null, 2);
+        Fs.writeFile( Path.join(Editor.url('app://'), 'versions.json'), json, function (err, state) {
+            if (err) {
+                Editor.error(err);
+                return;
+            }
+            cb(err, state);
+        });
+    },
+
+    _getHostTag: function (name, cb) {
+        var path = Editor.url('app://' + name);
+        var commands = 'git for-each-ref --sort=taggerdate refs/tags --format \'%(refname)\'';
+        Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
+            if (!error) {
+                if (!stdout) {
+                    if (cb) {
+                        cb('');
+                    }
+                    return;
+                }
+                var tags = stdout.split('\n');
+                var reftags = tags[tags.length - 2];
+                var tag = reftags.split('/');
+                tag = tag[tag.length-1];
+                cb(tag);
+            }
+            else {
+                cb('');
+            }
+        });
     },
 
     _onSelectChanged: function (event) {

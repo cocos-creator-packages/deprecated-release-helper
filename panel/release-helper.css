@@ -52,7 +52,6 @@
 
 .simple .name {
     flex: 3;
-    text-transform: capitalize;
 }
 
 .simple .version {
@@ -107,14 +106,15 @@ editor-input {
 }
 
 :host ::content editor-toolbar .btn.editor-button {
-    background-color: rgb(54, 54, 54);
+    background-color: #535252;
     border-radius: 2px;
     padding: 2px 4px;
-    border: 1px solid rgb(90, 90, 90);
+    border: 1px solid #262525;
 }
 
 :host ::content editor-toolbar [disabled] .btn.editor-button {
-  background: #535252 !important;
+  background: transparent !important;
+  border: none;
 }
 
 table {
