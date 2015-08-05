@@ -74,6 +74,7 @@ Polymer({
         if (!tag) {
             return 'NO TAG';
         }
+
         return tag;
     },
 
@@ -133,6 +134,7 @@ Polymer({
                 }
                 return;
             }
+
             var tags = stdout.split('\n');
             var reftags = tags[tags.length - 2];
             var tag = reftags.split('/');
@@ -155,6 +157,7 @@ Polymer({
                         Editor.error(stderr);
                         return;
                     }
+
                     next();
                 });
             },
@@ -166,14 +169,13 @@ Polymer({
                         Editor.error(stderr);
                         return;
                     }
-                    else {
-                        next();
-                    }
+
+                    next();
                 });
             } ,
         ],function () {
+            this.$.loader.hidden = true;
             if (cb) {
-                this.$.loader.hidden = true;
                 cb();
             }
         }.bind(this));
@@ -198,7 +200,6 @@ Polymer({
             var obj = JSON.parse(data.toString());
             obj.version = this.value.info.version;
             obj.hosts = this.value.info.hosts;
-            obj.dependencies = this.value.info.hosts;
             obj.dependencies = this.value.info.dependencies;
             var json = JSON.stringify(obj, null, 2);
             Fs.writeFile( Path.join(this.value.path, 'package.json'), json, function (err, state) {
@@ -216,16 +217,17 @@ Polymer({
         if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
             target.invalid = true;
             this.folded = true;
+            return;
         }
-        else {
-            target.invalid = false;
-        }
+
+        target.invalid = false;
     },
 
     _foldClass: function (folded) {
         if (folded) {
             return 'icon pointer flex-none fa fa-caret-down';
         }
+
         return 'icon pointer flex-none fa fa-caret-right';
     },
 
@@ -236,7 +238,7 @@ Polymer({
     },
 
     updateVersion: function (type) {
-        this.set('value.info.version', Semver.inc(this.value.info.version,type));
+        this.set('value.info.version', Semver.inc(this.value.info.version, type));
     },
 
     _refreshDependencies: function (name) {
@@ -244,6 +246,7 @@ Polymer({
             if (!res.info) {
                 return;
             }
+
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[name].substr(0, dependencies[name].indexOf(dependencies[name].match(/[0-9]+/)[0]));
             dependencies[name] = modifier + res.info.version;

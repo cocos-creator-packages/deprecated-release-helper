@@ -39,7 +39,6 @@ Editor.registerPanel('release-helper.panel',{
         this.$.loader.hidden = false;
 
         Async.series([
-
             function (next) {
                 Editor.Package.queryInfos(function ( results ) {
                     this.set('packages', results);
@@ -57,7 +56,6 @@ Editor.registerPanel('release-helper.panel',{
                     next();
                 }.bind(this));
             }.bind(this),
-
         ],function () {
             this.$.loader.hidden = true;
             if (cb) {
@@ -114,6 +112,7 @@ Editor.registerPanel('release-helper.panel',{
         if (packages.length <= 0) {
             return;
         }
+
         for (var i = 0; i < packages.length; ++i) {
             packages[i].confirm();
         }
@@ -144,7 +143,7 @@ Editor.registerPanel('release-helper.panel',{
                 var cmd = 'git tag -a ' + tag + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
                 Editor.sendRequestToCore('release-helper:exec-cmd', cmd, path, function( error, stdout, stderr ) {
                     if (!error) {
-                        cb();
+                        next();
                     }
                 });
             },
@@ -161,7 +160,7 @@ Editor.registerPanel('release-helper.panel',{
                 return;
             }
             // check the git status
-            if ( this._hasModified(packages[j].value.path) ) {
+            if ( !this._hasModified(packages[j].value.path) ) {
                 var cmd = 'git tag -a ' + packages[j].value.info.version + ' -m ' + '\' add tag  from "release-helper". date: ' + new Date() + ' \'';
                 var path = packages[j].value.path;
                 Editor.sendRequestToCore('release-helper:exec-cmd', cmd,path, function( error, stdout, stderr ) {
