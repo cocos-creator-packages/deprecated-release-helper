@@ -77,11 +77,11 @@ editor-input {
 }
 
 .pkgname {
-    display: -webkit-box;
     align-items: center;
     overflow-x: hidden;
     word-spacing: normal;
     white-space: nowrap;
+    text-overflow: ellipsis
 }
 
 .oldversion {
@@ -109,8 +109,7 @@ editor-input {
 }
 
 .left {
-    display: -webkit-box;
-    overflow: hidden;
+    display: flex;
     line-height: 20px;
     white-space: nowrap;
 }

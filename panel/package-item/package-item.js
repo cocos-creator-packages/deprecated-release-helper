@@ -74,6 +74,7 @@ Polymer({
         if (!tag) {
             return 'NO TAG';
         }
+
         return tag;
     },
 
@@ -121,25 +122,26 @@ Polymer({
         var path = this.value.path;
         var commands = 'git for-each-ref --sort=taggerdate refs/tags --format \'%(refname)\'';
         Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
-            if (!error) {
-                if (!stdout) {
-                    this.set('tag','');
-                    if (cb) {
-                        cb();
-                    }
-                    return;
-                }
-                var tags = stdout.split('\n');
-                var reftags = tags[tags.length - 2];
-                var tag = reftags.split('/');
-                tag = tag[tag.length-1];
-                this.set('tag',tag);
-                if (cb) {
-                    cb(this.tag);
-                }
-            }
-            else {
+            if (error) {
                 Editor.error(stderr);
+                return;
+            }
+
+            if (!stdout) {
+                this.set('tag','');
+                if (cb) {
+                    cb('');
+                }
+                return;
+            }
+
+            var tags = stdout.split('\n');
+            var reftags = tags[tags.length - 2];
+            var tag = reftags.split('/');
+            tag = tag[tag.length-1];
+            this.set('tag',tag);
+            if (cb) {
+                cb(this.tag);
             }
         }.bind(this));
     },
@@ -151,29 +153,22 @@ Polymer({
             function (next) {
                 var commands = 'git tag -l | xargs git tag -d';
                 Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
-                    if (!error) {
-                        next();
-                    }
-                    else {
-                        Editor.error(stderr);
-                    }
+                    next(error, stdout, stderr );
                 });
             },
 
             function (next) {
                 var commands = 'git fetch --tags';
                 Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
-                    if (!error) {
-                        next();
-                    }
-                    else {
-                        Editor.error(stderr);
-                    }
+                    next(error, stdout, stderr );
                 });
             } ,
-        ],function () {
+        ],function (error, stdout, stderr) {
+            if (error) {
+                Editor.error(stderr);
+            }
+            this.$.loader.hidden = true;
             if (cb) {
-                this.$.loader.hidden = true;
                 cb();
             }
         }.bind(this));
@@ -190,22 +185,21 @@ Polymer({
 
     confirm: function () {
         Fs.readFile(Path.join(this.value.path, 'package.json'), function (err, data) {
-            if (!err) {
-                var obj = JSON.parse(data.toString());
-                obj.version = this.value.info.version;
-                obj.hosts = this.value.info.hosts;
-                obj.dependencies = this.value.info.hosts;
-                obj.dependencies = this.value.info.dependencies;
-                var json = JSON.stringify(obj, null, 2);
-                Fs.writeFile( Path.join(this.value.path, 'package.json'), json, function (err, state) {
-                    if (err) {
-                        Editor.error(err);
-                    }
-                });
-            }
-            else {
+            if (err) {
                 Editor.error(err);
+                return;
             }
+
+            var obj = JSON.parse(data.toString());
+            obj.version = this.value.info.version;
+            obj.hosts = this.value.info.hosts;
+            obj.dependencies = this.value.info.dependencies;
+            var json = JSON.stringify(obj, null, 2);
+            Fs.writeFile( Path.join(this.value.path, 'package.json'), json, function (err, state) {
+                if (err) {
+                    Editor.error(err);
+                }
+            });
         }.bind(this));
 
         this._dirty = false;
@@ -216,17 +210,18 @@ Polymer({
         if (!/^(=|>=|<=|>|<|\^|)[0-9]+\.[0-9]+\.([0-9]+|x)$/.test(target.value)) {
             target.invalid = true;
             this.folded = true;
+            return;
         }
-        else {
-            target.invalid = false;
-        }
+
+        target.invalid = false;
     },
 
     _foldClass: function (folded) {
         if (folded) {
-            return 'icon pointer fa fa-caret-down';
+            return 'icon pointer flex-none fa fa-caret-down';
         }
-        return 'icon pointer fa fa-caret-right';
+
+        return 'icon pointer flex-none fa fa-caret-right';
     },
 
     _onShowinFinderClick: function (event) {
@@ -236,7 +231,7 @@ Polymer({
     },
 
     updateVersion: function (type) {
-        this.set('value.info.version', Semver.inc(this.value.info.version,type));
+        this.set('value.info.version', Semver.inc(this.value.info.version, type));
     },
 
     _refreshDependencies: function (name) {
@@ -244,6 +239,7 @@ Polymer({
             if (!res.info) {
                 return;
             }
+
             var dependencies = this.value.info.dependencies;
             var modifier = dependencies[name].substr(0, dependencies[name].indexOf(dependencies[name].match(/[0-9]+/)[0]));
             dependencies[name] = modifier + res.info.version;
@@ -278,12 +274,12 @@ Polymer({
         var path = this.value.path;
         var commands = 'git tag ' + this.tag + ' -d';
         Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
-            if (!error) {
-                this.syncGitTag();
-            }
-            else {
+            if (error) {
                 Editor.error(this.value.info.name + ': ' + stderr);
+                return;
             }
+
+            this.syncGitTag();
         }.bind(this));
     },
 
