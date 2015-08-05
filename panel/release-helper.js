@@ -243,6 +243,7 @@ Editor.registerPanel('release-helper.panel',{
             builtin[dumpPkgs[item].value.info.name] = dumpPkgs[item].tag;
         }
         dumpObj.builtin = builtin;
+        
         var hostsNames = [];
         var runtimesNames = [];
 
@@ -271,70 +272,70 @@ Editor.registerPanel('release-helper.panel',{
                 }.bind(this));
             }
         }.bind(this);
+
         var whiteList = ['asset-db', 'canvas-studio', 'editor-framework', 'engine-framework', 'fireball'];
+
         Editor.sendRequestToCore('release-helper:query-hosts-infos', function( results ) {
             Fs.readdir(Editor.url('app://runtime'), function (error, list) {
-                if (!error) {
-                    runtimesNames = list;
+                if (error) {
+                    Editor.error(error);
+                    return;
+                }
 
-                    for (var item in results) {
-                        for (var i in whiteList) {
-                            if (item === whiteList[i]) {
-                                hostsNames.push(item);
-                            }
+                runtimesNames = list;
+                for (var item in results) {
+                    for (var i in whiteList) {
+                        if (item === whiteList[i]) {
+                            hostsNames.push(item);
                         }
                     }
-                    pushTags(function () {
-                        dumpObj.host = hosts;
-                        dumpObj.runtime = runtime;
-                        this._saveConfig(dumpObj, function () {
-                            Editor.success('Dump versions config succeed!');
-                        });
-                    }.bind(this));
                 }
-                else {
-                    Editor.error(error);
-                }
+
+                pushTags( function () {
+                    dumpObj.host = hosts;
+                    dumpObj.runtime = runtime;
+                    this._saveConfig(dumpObj, function (err, state) {
+                        if (err) {
+                            Editor.error(err);
+                            return;
+                        }
+                        Editor.success('Dump versions config succeed!');
+                    });
+                }.bind(this));
+
             }.bind(this));
         }.bind(this));
     },
 
     _saveConfig: function (obj, cb) {
         var json = JSON.stringify(obj, null, 2);
-        Fs.writeFile(Editor.url('app://versions.json'), json, function (err, state) {
-            if (err) {
-                Editor.error(err);
-                return;
-            }
-            if (cb) {
-                cb(err, state);
-            }
-        });
+        Fs.writeFile(Editor.url('app://versions.json'), json, cb);
     },
 
     _getHostTag: function (name, cb) {
         var path = Editor.url('app://' + name);
         var commands = 'git for-each-ref --sort=taggerdate refs/tags --format \'%(refname)\'';
         Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
-            if (!error) {
-                if (!stdout) {
-                    if (cb) {
-                        cb('');
-                    }
-                    return;
-                }
-                var tags = stdout.split('\n');
-                var reftags = tags[tags.length - 2];
-                var tag = reftags.split('/');
-                tag = tag[tag.length-1];
-                if (cb) {
-                    cb(tag);
-                }
-            }
-            else {
+            if (error) {
                 if (cb) {
                     cb('');
                 }
+                return;
+            }
+
+            if (!stdout) {
+                if (cb) {
+                    cb('');
+                }
+                return;
+            }
+
+            var tags = stdout.split('\n');
+            var reftags = tags[tags.length - 2];
+            var tag = reftags.split('/');
+            tag = tag[tag.length-1];
+            if (cb) {
+                cb(tag);
             }
         });
     },
