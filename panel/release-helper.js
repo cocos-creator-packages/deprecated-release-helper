@@ -273,7 +273,7 @@ Editor.registerPanel('release-helper.panel',{
         }.bind(this);
 
         Editor.sendRequestToCore('release-helper:query-hosts-infos', function( results ) {
-            Fs.readdir(Editor.url('app://runtime'),function (error,list) {
+            Fs.readdir(Editor.url('app://runtime'), function (error, list) {
                 if (!error) {
                     runtimesNames = list;
 
@@ -311,7 +311,7 @@ Editor.registerPanel('release-helper.panel',{
     _getHostTag: function (name, cb) {
         var path = Editor.url('app://' + name);
         var commands = 'git for-each-ref --sort=taggerdate refs/tags --format \'%(refname)\'';
-        Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error,stdout,stderr ) {
+        Editor.sendRequestToCore('release-helper:exec-cmd', commands, path, function( error, stdout, stderr ) {
             if (!error) {
                 if (!stdout) {
                     if (cb) {
