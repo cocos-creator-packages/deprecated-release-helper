@@ -306,7 +306,9 @@ Editor.registerPanel('release-helper.panel',{
                 Editor.error(err);
                 return;
             }
-            cb(err, state);
+            if (cb) {
+                cb(err, state);
+            }
         });
     },
 
@@ -325,10 +327,14 @@ Editor.registerPanel('release-helper.panel',{
                 var reftags = tags[tags.length - 2];
                 var tag = reftags.split('/');
                 tag = tag[tag.length-1];
-                cb(tag);
+                if (cb) {
+                    cb(tag);
+                }
             }
             else {
-                cb('');
+                if (cb) {
+                    cb('');
+                }
             }
         });
     },
