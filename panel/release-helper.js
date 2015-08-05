@@ -1,7 +1,6 @@
 var Async = require('async');
 var GitUtils = require('git-utils');
 var Fs = require('fire-fs');
-var Path = require('fire-path');
 
 Editor.registerPanel('release-helper.panel',{
     is: 'release-helper',
@@ -300,7 +299,7 @@ Editor.registerPanel('release-helper.panel',{
 
     _saveConfig: function (obj, cb) {
         var json = JSON.stringify(obj, null, 2);
-        Fs.writeFile( Path.join(Editor.url('app://'), 'versions.json'), json, function (err, state) {
+        Fs.writeFile(Editor.url('app://versions.json'), json, function (err, state) {
             if (err) {
                 Editor.error(err);
                 return;
