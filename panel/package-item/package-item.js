@@ -4,9 +4,7 @@ var Shell = require('shell');
 var Semver = require('semver');
 var Path = require('fire-path');
 
-Polymer({
-    is: 'package-item',
-
+Editor.registerElement({
     properties: {
         value: {
             type: Array,

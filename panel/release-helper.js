@@ -2,9 +2,7 @@ var Async = require('async');
 var GitUtils = require('git-utils');
 var Fs = require('fire-fs');
 
-Editor.registerPanel('release-helper.panel',{
-    is: 'release-helper',
-
+Editor.registerPanel('release-helper.panel', {
     listeners: {
         'item-dirty' : '_onItemDirtyChanged'
     },
