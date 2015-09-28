@@ -269,7 +269,7 @@ Editor.registerPanel('release-helper.panel', {
             }.bind(this));
         }.bind(this);
 
-        var whiteList = ['asset-db', 'canvas-studio', 'editor-framework', 'engine-framework', 'fireball'];
+        var whiteList = ['asset-db', 'editor', 'editor-framework', 'engine-framework', 'fireball'];
 
         Editor.sendRequestToCore('release-helper:query-hosts-infos', function( results ) {
             Fs.readdir(Editor.url('app://runtime'), function (error, list) {
