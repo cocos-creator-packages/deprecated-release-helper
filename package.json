@@ -8,8 +8,9 @@
   },
   "main": "main.js",
   "menus": {
-    "Developer/Release Helper": {
-      "message": "release-helper:open"
+    "i18n:MAIN_MENU.developer.title/Release Helper": {
+      "message": "release-helper:open",
+      "dev": true
     }
   },
   "panels": {
